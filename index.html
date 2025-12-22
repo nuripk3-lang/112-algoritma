@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>112 Müdahale Algoritmaları</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🚑 112 Acil Müdahale</h1>
+<p class="info">Vakaya çıkmadan önce hızlı gözden geçirme amaçlıdır.</p>
+
+<h2>Yaş Grubu</h2>
+<div class="grid">
+  <button onclick="show('yetiskin')">🧑 Yetişkin</button>
+  <button onclick="show('cocuk')">👶 Çocuk</button>
+</div>
+
+<div id="yetiskin" class="hidden">
+  <h2>Yetişkin Ön Tanı</h2>
+  <button onclick="algo('anafilaksi')">⚡ Anafilaksi</button>
+  <button onclick="algo('arrest')">❤️ Kardiyak Arrest</button>
+</div>
+
+<div id="cocuk" class="hidden">
+  <h2>Çocuk Ön Tanı</h2>
+  <button onclick="algo('febril')">🔥 Febril Konvülziyon</button>
+</div>
+
+<div id="content"></div>
+
+<footer>
+  <small>⚠️ Eğitim ve hatırlatma amaçlıdır. Klinik karar ekip ve hekime aittir.</small>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
