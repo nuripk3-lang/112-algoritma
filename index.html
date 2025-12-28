@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>112 Müdahale Algoritmaları</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,35 +11,81 @@
 <h1>🚑 112 Acil Müdahale</h1>
 <p class="info">Vakaya çıkmadan önce hızlı gözden geçirme amaçlıdır.</p>
 
-<h2>Yaş Grubu</h2>
+<input 
+  type="text" 
+  id="searchInput" 
+  placeholder="🔍 Algoritma ara (AKS, Astım, Yanık...)"
+  onkeyup="searchAlgo()"
+/>
+
+<!-- ANA MENÜ -->
 <div class="grid">
-  <button onclick="show('yetiskin')">🧑 Yetişkin</button>
-  <button onclick="show('cocuk')">👶 Çocuk</button>
+  <button onclick="showGroup('yetiskin')">🧑 Yetişkin</button>
+  <button onclick="showGroup('cocuk')">👶 Çocuk</button>
+  <button onclick="showGroup('cocukDoz')">👶💉 Çocuk Doz</button>
 </div>
 
 <!-- YETİŞKİN -->
-<div id="yetiskin" class="hidden">
-  <h2>Yetişkin Ön Tanı</h2>
-
-  <button onclick="algo('anafilaksi')">⚡ Anafilaksi</button>
-  <button onclick="algo('arrest')">❤️ Kardiyak Arrest</button>
-  <button onclick="algo('inme')">🧠 İnme</button>
-  <button onclick="algo('hipoglisemi')">🍬 Hipoglisemi</button>
+<div id="yetiskin" class="section" style="display:none;">
+  <h2>Yetişkin Ön Tanılar</h2>
+  <div class="grid">
+    <button onclick="showAlgo('aks','Yetişkin')">AKS</button>
+    <button onclick="showAlgo('astim','Yetişkin')">Astım</button>
+    <button onclick="showAlgo('koah','Yetişkin')">KOAH</button>
+    <button onclick="showAlgo('bradikardi','Yetişkin')">Bradikardi</button>
+    <button onclick="showAlgo('tasikardi','Yetişkin')">Taşikardi</button>
+    <button onclick="showAlgo('arrest','Yetişkin')">Arrest</button>
+    <button onclick="showAlgo('hipovolemi','Yetişkin')">Hipovolemik Şok</button>
+    <button onclick="showAlgo('vertigo','Yetişkin')">Vertigo</button>
+    <button onclick="showAlgo('yanik','Yetişkin')">Yanık</button>
+    <button onclick="showAlgo('zehir','Yetişkin')">Zehirlenme</button>
+  </div>
 </div>
 
 <!-- ÇOCUK -->
-<div id="cocuk" class="hidden">
-  <h2>Çocuk Ön Tanı</h2>
-
-  <button onclick="algo('febril')">🔥 Febril Konvülziyon</button>
+<div id="cocuk" class="section" style="display:none;">
+  <h2>Çocuk Ön Tanılar</h2>
+  <div class="grid">
+    <button onclick="showAlgo('aks','Çocuk')">AKS</button>
+    <button onclick="showAlgo('astim','Çocuk')">Astım</button>
+    <button onclick="showAlgo('koah','Çocuk')">KOAH</button>
+    <button onclick="showAlgo('bradikardi','Çocuk')">Bradikardi</button>
+    <button onclick="showAlgo('tasikardi','Çocuk')">Taşikardi</button>
+    <button onclick="showAlgo('arrest','Çocuk')">Arrest</button>
+    <button onclick="showAlgo('hipovolemi','Çocuk')">Hipovolemik Şok</button>
+    <button onclick="showAlgo('vertigo','Çocuk')">Vertigo</button>
+    <button onclick="showAlgo('yanik','Çocuk')">Yanık</button>
+    <button onclick="showAlgo('zehir','Çocuk')">Zehirlenme</button>
+  </div>
 </div>
 
-<!-- ALGORİTMA ALANI -->
+<!-- 👶 ÇOCUK DOZ HESAPLAMA -->
+<div id="cocukDoz" class="section" style="display:none;">
+  <h2>👶 Çocuk Doz Hesaplama</h2>
+
+  <input 
+    type="number"
+    id="kiloInput"
+    placeholder="Çocuğun kilosu (kg)"
+    oninput="hesaplaCocukDoz()"
+  />
+
+  <div id="dozSonuc"></div>
+</div>
+
+<!-- ALGORİTMA İÇERİĞİ -->
 <div id="content"></div>
 
-<footer>
-  <small>⚠️ Eğitim ve hatırlatma amaçlıdır. Klinik karar ekip ve hekime aittir.</small>
-</footer>
+<!-- CPR -->
+<div id="cprBox">
+  <h2>🫀 CPR Sayacı</h2>
+  <div id="cprTimer">02:00</div>
+
+  <button onclick="startCPR()">▶️ Başlat</button>
+  <button onclick="stopCPR()">⏹ Durdur</button>
+
+  <p id="cprAlert"></p>
+</div>
 
 <script src="app.js"></script>
 </body>

@@ -1,87 +1,147 @@
-// Yaş grubu göster / gizle
-function show(id) {
-  document.getElementById("yetiskin").style.display = "none";
-  document.getElementById("cocuk").style.display = "none";
+/* =========================
+   SAYFA GEÇİŞLERİ
+========================= */
+function showGroup(grup) {
+  const sections = ["yetiskin", "cocuk", "cocukDoz"];
 
-  if (id === "yetiskin" || id === "cocuk") {
-    document.getElementById(id).style.display = "block";
-    document.getElementById("content").innerHTML = "";
-  }
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+
+  document.getElementById("content").innerHTML = "";
+
+  const hedef = document.getElementById(grup);
+  if (hedef) hedef.style.display = "block";
 }
 
-// Algoritmaları göster
-function algo(type) {
-  let html = "";
+/* =========================
+   ALGORİTMALAR
+========================= */
+function showAlgo(type, grup) {
+  let html = `<h2>${type.toUpperCase()} – ${grup}</h2><ul>`;
 
-  if (type === "anafilaksi") {
-    html = `
-      <h2>⚡ Anafilaksi – Yetişkin</h2>
-      <ul>
-        <li>🔴 ABC + Yüksek akım O₂</li>
-        <li>💉 Adrenalin 0.5 mg IM (1:1000)</li>
-        <li>💧 IV damar yolu – SF</li>
-        <li>⚠️ Stridor / hipotansiyon</li>
-        <li>🕒 5 dk sonra tekrar değerlendir</li>
-      </ul>
-    `;
-  }
+  const algos = {
+    aks: ["ABC", "12 derivasyon EKG", "Aspirin", "Damar yolu"],
+    astim: ["O₂", "Nebül salbutamol", "Steroid"],
+    koah: ["Düşük akım O₂", "Nebül", "CO₂ retansiyonuna dikkat"],
+    bradikardi: ["Monitör", "Atropin", "Pacing"],
+    tasikardi: ["Ritim analizi", "Adenozin / Senkronize kardiyoversiyon"],
+    arrest: ["CPR", "Defibrilasyon", "Adrenalin"],
+    hipovolemi: ["SF bolus", "Kanama kontrolü"],
+    vertigo: ["Nörolojik değerlendirme", "Glukoz ölç"],
+    yanik: ["Yanık yüzdesi", "Soğutma", "Sıvı"],
+    zehir: ["ABC", "Maruziyet kes", "Ulusal Zehir Danışma"]
+  };
 
-  if (type === "arrest") {
-    html = `
-      <h2>❤️ Kardiyak Arrest – Yetişkin</h2>
-      <ul>
-        <li>🔴 Bilinç / solunum kontrolü</li>
-        <li>🫀 CPR 30:2</li>
-        <li>⚡ Defibrilasyon (gerekiyorsa)</li>
-        <li>💉 Adrenalin 1 mg IV/IO (3–5 dk)</li>
-      </ul>
-    `;
-  }
+  algos[type].forEach(adim => {
+    html += `<li>${adim}</li>`;
+  });
 
-  if (type === "inme") {
-    html = `
-      <h2>🧠 İnme – Yetişkin</h2>
-      <ul>
-        <li>FAST değerlendirmesi</li>
-        <li>Semptom başlama zamanı</li>
-        <li>Kapiller glukoz ölç</li>
-        <li>SpO₂ &lt; 94% ise O₂</li>
-        <li>Damar yolu aç</li>
-        <li>GKS + vital bulgular</li>
-        <li>İnme merkezi ön bilgilendirme</li>
-      </ul>
-    `;
-  }
-
-  if (type === "hipoglisemi") {
-    html = `
-      <h2>🍬 Hipoglisemi – Yetişkin</h2>
-      <ul>
-        <li>Kapiller glukoz ölç</li>
-        <li>Bilinç açıksa oral glukoz</li>
-        <li>Bilinç kapalıysa IV dekstroz</li>
-        <li>Damar yolu yoksa IM glukagon</li>
-        <li>Vital bulgular takibi</li>
-      </ul>
-    `;
-  }
-
-  if (type === "febril") {
-    html = `
-      <h2>🔥 Febril Konvülziyon – Çocuk</h2>
-      <ul>
-        <li>🔴 ABC değerlendirme</li>
-        <li>🛌 Yan yatır</li>
-        <li>💉 Midazolam (gerekiyorsa)</li>
-        <li>🌡️ Ateş kontrolü</li>
-      </ul>
-    `;
-  }
-
+  html += "</ul>";
   document.getElementById("content").innerHTML = html;
 }
 
-// Service Worker (offline için)
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
+/* =========================
+   ARAMA
+========================= */
+function searchAlgo() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  const buttons = document.querySelectorAll("button");
+
+  buttons.forEach(btn => {
+    const text = btn.innerText.toLowerCase();
+    if (
+      text.includes(query) ||
+      btn.getAttribute("onclick")?.includes(query)
+    ) {
+      btn.style.display = "block";
+    } else if (
+      text.includes("yetişkin") ||
+      text.includes("çocuk")
+    ) {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  });
+}
+
+/* =========================
+   CPR SAYACI
+========================= */
+let cprInterval;
+let timeLeft = 120;
+
+function startCPR() {
+  clearInterval(cprInterval);
+  timeLeft = 120;
+  updateCPRDisplay();
+  document.getElementById("cprAlert").innerText = "";
+
+  cprInterval = setInterval(() => {
+    timeLeft--;
+
+    if (timeLeft <= 0) {
+      playBeep();
+
+      if (navigator.vibrate) {
+        navigator.vibrate([500, 200, 500, 200, 500]);
+      }
+
+      document.getElementById("cprAlert").innerText =
+        "🔔 KOMPRESYON DEĞİŞTİR";
+      timeLeft = 120;
+    }
+
+    updateCPRDisplay();
+  }, 1000);
+}
+
+function stopCPR() {
+  clearInterval(cprInterval);
+  timeLeft = 120;
+  updateCPRDisplay();
+  document.getElementById("cprAlert").innerText = "";
+}
+
+function updateCPRDisplay() {
+  const min = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const sec = String(timeLeft % 60).padStart(2, "0");
+  document.getElementById("cprTimer").innerText = `${min}:${sec}`;
+}
+
+function playBeep() {
+  const audio = new Audio(
+    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA="
+  );
+  audio.play();
+}
+
+/* =========================
+   👶 ÇOCUK DOZ HESAPLAMA
+========================= */
+function hesaplaCocukDoz() {
+  const kilo = Number(document.getElementById("kiloInput").value);
+  const sonuc = document.getElementById("dozSonuc");
+
+  if (!kilo || kilo <= 0) {
+    sonuc.innerHTML = "";
+    return;
+  }
+
+  const adrenalinAnafilaksi = (0.01 * kilo).toFixed(2); // mg IM
+  const adrenalinArrest = (0.01 * kilo).toFixed(2);     // mg IV/IO
+  const midazolam = (0.1 * kilo).toFixed(2);            // mg
+  const amiodaron = (5 * kilo).toFixed(0);              // mg
+
+  sonuc.innerHTML = `
+    <p>⚡ <strong>Adrenalin (Anafilaksi):</strong> ${adrenalinAnafilaksi} mg IM</p>
+    <p>❤️ <strong>Adrenalin (Arrest):</strong> ${adrenalinArrest} mg IV/IO</p>
+    <p>💉 <strong>Midazolam:</strong> ${midazolam} mg</p>
+    <p>💊 <strong>Amiodaron:</strong> ${amiodaron} mg</p>
+    <small style="color:#6b7280;">
+      ⚠️ Eğitim amaçlıdır. Klinik karar ekip/hekim sorumluluğundadır.
+    </small>
+  `;
 }
