@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>112 Müdahale Algoritmaları</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hastane öncesi acil müdahale algoritmaları — hızlı referans, dozlar ve uyarılar.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,82 +12,88 @@
 <h1>🚑 112 Acil Müdahale</h1>
 <p class="info">Vakaya çıkmadan önce hızlı gözden geçirme amaçlıdır.</p>
 
-<input 
-  type="text" 
-  id="searchInput" 
-  placeholder="🔍 Algoritma ara (AKS, Astım, Yanık...)"
+<label for="searchInput" class="visually-hidden">Algoritma ara</label>
+<input
+  type="text"
+  id="searchInput"
+  placeholder="🔍 Algoritma ara (Nöbet, Travma, Anafilaksi...)"
   onkeyup="searchAlgo()"
+  aria-label="Algoritma ara"
 />
 
-<!-- ANA MENÜ -->
 <div class="grid">
-  <button onclick="showGroup('yetiskin')">🧑 Yetişkin</button>
-  <button onclick="showGroup('cocuk')">👶 Çocuk</button>
-  <button onclick="showGroup('cocukDoz')">👶💉 Çocuk Doz</button>
+  <button data-key="yetiskin" onclick="showGroup('yetiskin')" aria-controls="yetiskin" aria-pressed="false">🧑 Yetişkin</button>
+  <button data-key="cocuk" onclick="showGroup('cocuk')" aria-controls="cocuk" aria-pressed="false">👶 Çocuk</button>
 </div>
 
 <!-- YETİŞKİN -->
 <div id="yetiskin" class="section" style="display:none;">
   <h2>Yetişkin Ön Tanılar</h2>
-  <div class="grid">
-    <button onclick="showAlgo('aks','Yetişkin')">AKS</button>
-    <button onclick="showAlgo('astim','Yetişkin')">Astım</button>
-    <button onclick="showAlgo('koah','Yetişkin')">KOAH</button>
-    <button onclick="showAlgo('bradikardi','Yetişkin')">Bradikardi</button>
-    <button onclick="showAlgo('tasikardi','Yetişkin')">Taşikardi</button>
-    <button onclick="showAlgo('arrest','Yetişkin')">Arrest</button>
-    <button onclick="showAlgo('hipovolemi','Yetişkin')">Hipovolemik Şok</button>
-    <button onclick="showAlgo('vertigo','Yetişkin')">Vertigo</button>
-    <button onclick="showAlgo('yanik','Yetişkin')">Yanık</button>
-    <button onclick="showAlgo('zehir','Yetişkin')">Zehirlenme</button>
+  <div id="yetiskinGrid" class="grid">
+    <button data-key="aks" data-tags="kalp,stemi,ekg,aspirin" onclick="showAlgo('aks','Yetişkin')">AKS</button>
+    <button data-key="astim" data-tags="nefes,bronkospazm,ventolin" onclick="showAlgo('astim','Yetişkin')">Astım</button>
+    <button data-key="koah" data-tags="koah,nefes,hiperkapni" onclick="showAlgo('koah','Yetişkin')">KOAH</button>
+    <button data-key="bradikardi" data-tags="yavas,nabiz,atropin" onclick="showAlgo('bradikardi','Yetişkin')">Bradikardi</button>
+    <button data-key="tasikardi" data-tags="hizli,nabiz,adenozin" onclick="showAlgo('tasikardi','Yetişkin')">Taşikardi</button>
+    <button data-key="arrest" data-tags="kpr,defib,adrenalin" onclick="showAlgo('arrest','Yetişkin')">Arrest</button>
+    <button data-key="hipovolemi" data-tags="şok,sıvı,kanama" onclick="showAlgo('hipovolemi','Yetişkin')">Hipovolemik Şok</button>
+    <button data-key="vertigo" data-tags="başdönmesi,bulantı" onclick="showAlgo('vertigo','Yetişkin')">Vertigo</button>
+    <button data-key="yanik" data-tags="yanık,parkland,alan" onclick="showAlgo('yanik','Yetişkin')">Yanık</button>
+    <button data-key="zehir" data-tags="zehir,toksikoloji,antidot" onclick="showAlgo('zehir','Yetişkin')">Zehirlenme</button>
+
+    <!-- YENİLER -->
+    <button data-key="nobet" data-tags="nöbet,konvülziyon,midazolam" onclick="showAlgo('nobet','Yetişkin')">Nöbet</button>
+    <button data-key="anafilaksi" data-tags="alerji,şok,epinefrin" onclick="showAlgo('anafilaksi','Yetişkin')">Anafilaksi</button>
+    <button data-key="travma" data-tags="travma,immobilizasyon,kanama" onclick="showAlgo('travma','Yetişkin')">Travmalı Hasta</button>
+    <button data-key="crush" data-tags="crush,myoglobin,hiperkalemi" onclick="showAlgo('crush','Yetişkin')">Crush Sendromu</button>
+    <button data-key="kafa" data-tags="kafa,gks,entübasyon" onclick="showAlgo('kafa','Yetişkin')">Kafa Travması</button>
   </div>
 </div>
 
 <!-- ÇOCUK -->
 <div id="cocuk" class="section" style="display:none;">
   <h2>Çocuk Ön Tanılar</h2>
-  <div class="grid">
-    <button onclick="showAlgo('aks','Çocuk')">AKS</button>
-    <button onclick="showAlgo('astim','Çocuk')">Astım</button>
-    <button onclick="showAlgo('koah','Çocuk')">KOAH</button>
-    <button onclick="showAlgo('bradikardi','Çocuk')">Bradikardi</button>
-    <button onclick="showAlgo('tasikardi','Çocuk')">Taşikardi</button>
-    <button onclick="showAlgo('arrest','Çocuk')">Arrest</button>
-    <button onclick="showAlgo('hipovolemi','Çocuk')">Hipovolemik Şok</button>
-    <button onclick="showAlgo('vertigo','Çocuk')">Vertigo</button>
-    <button onclick="showAlgo('yanik','Çocuk')">Yanık</button>
-    <button onclick="showAlgo('zehir','Çocuk')">Zehirlenme</button>
+  <div id="cocukGrid" class="grid">
+    <button data-key="aks" data-tags="kalp,çocuk" onclick="showAlgo('aks','Çocuk')">AKS</button>
+    <button data-key="astim" data-tags="nefes,çocuk,ventolin" onclick="showAlgo('astim','Çocuk')">Astım</button>
+    <button data-key="koah" data-tags="koah,çocuk" onclick="showAlgo('koah','Çocuk')">KOAH</button>
+    <button data-key="bradikardi" data-tags="yavas,çocuk,atropin" onclick="showAlgo('bradikardi','Çocuk')">Bradikardi</button>
+    <button data-key="tasikardi" data-tags="hızlı,çocuk,adenozin" onclick="showAlgo('tasikardi','Çocuk')">Taşikardi</button>
+    <button data-key="arrest" data-tags="kpr,çocuk,defib" onclick="showAlgo('arrest','Çocuk')">Arrest</button>
+    <button data-key="hipovolemi" data-tags="şok,çocuk,sıvı" onclick="showAlgo('hipovolemi','Çocuk')">Hipovolemik Şok</button>
+    <button data-key="vertigo" data-tags="başdönmesi,çocuk" onclick="showAlgo('vertigo','Çocuk')">Vertigo</button>
+    <button data-key="yanik" data-tags="yanık,çocuk" onclick="showAlgo('yanik','Çocuk')">Yanık</button>
+    <button data-key="zehir" data-tags="zehir,çocuk,antidot" onclick="showAlgo('zehir','Çocuk')">Zehirlenme</button>
+
+    <!-- YENİLER -->
+    <button data-key="nobet" data-tags="nöbet,çocuk" onclick="showAlgo('nobet','Çocuk')">Nöbet</button>
+    <button data-key="anafilaksi" data-tags="alerji,çocuk,epinefrin" onclick="showAlgo('anafilaksi','Çocuk')">Anafilaksi</button>
+    <button data-key="travma" data-tags="travma,çocuk" onclick="showAlgo('travma','Çocuk')">Travmalı Hasta</button>
+    <button data-key="crush" data-tags="crush,çocuk" onclick="showAlgo('crush','Çocuk')">Crush Sendromu</button>
+    <button data-key="kafa" data-tags="kafa,çocuk" onclick="showAlgo('kafa','Çocuk')">Kafa Travması</button>
   </div>
-</div>
 
-<!-- 👶 ÇOCUK DOZ HESAPLAMA -->
-<div id="cocukDoz" class="section" style="display:none;">
+  <!-- ÇOCUK DOZ -->
   <h2>👶 Çocuk Doz Hesaplama</h2>
-
-  <input 
-    type="number"
-    id="kiloInput"
-    placeholder="Çocuğun kilosu (kg)"
-    oninput="hesaplaCocukDoz()"
-  />
-
-  <div id="dozSonuc"></div>
+  <label for="kiloInput" class="visually-hidden">Kilo</label>
+  <input type="number" id="kiloInput" placeholder="Kilo (kg)" oninput="hesaplaCocukDoz()" aria-label="Kilo (kg)">
+  <div id="dozSonuc" aria-live="polite"></div>
 </div>
 
-<!-- ALGORİTMA İÇERİĞİ -->
-<div id="content"></div>
+<div id="content" aria-live="polite" style="display:none;"></div>
 
 <!-- CPR -->
 <div id="cprBox">
   <h2>🫀 CPR Sayacı</h2>
-  <div id="cprTimer">02:00</div>
-
-  <button onclick="startCPR()">▶️ Başlat</button>
-  <button onclick="stopCPR()">⏹ Durdur</button>
-
-  <p id="cprAlert"></p>
+  <div id="cprTimer" role="timer" aria-live="polite">02:00</div>
+  <div class="cpr-controls">
+    <button onclick="startCPR()">▶️ Başlat</button>
+    <button onclick="stopCPR()">⏹ Durdur</button>
+    <button onclick="resetCPR()">🔁 Sıfırla</button>
+  </div>
+  <p id="cprAlert" aria-live="assertive"></p>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js" defer></script>
 </body>
 </html>
