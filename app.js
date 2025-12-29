@@ -373,3 +373,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// --- CPR beep entegrasyonu (app.js sonuna ekle) ---
+/* beep dosyasını yükle (kullanıcının oluşturduğu sound klasörü ve beep.mp3) */
+const _cprBeepAudio = new Audio('sound/beep.mp3');
+_cprBeepAudio.preload = 'auto';
+
+/* Tek seferlik çalma kontrolü */
+let _cprBeepPlayed = false;
+
+/* Güvenli çalma denemesi (promise tabanlı hataları yakalar) */
+function _tryPlayCprBeep() {
+  if (_cprBeepPlayed) return;
+  try {
+    _cprBeepAudio.currentTime = 0;
+    const playPromise = _cprBeepAudio.play();
+    if (playPromise && typeof playPromise.then === 'function') {
+      playPromise.then(() => {
+        /* Başarılı çalma */
+      }).catch((err) => {
+        /* Otomatik oynatma kısıtlaması veya başka hata; sessizce yakala */
+        console.warn('Beep çalınamadı:', err);
+      });
+    }
+  } catch (e) {
+    console.warn('Beep oynatma hatası:', e);
+  }
+  _cprBeepPlayed = true;
+}
+
+/* Mevcut kodu değiştirmeden cprRemaining değişkenini izleyen hafif bir watcher.
+   cprRemaining <= 0 olduğunda beep çalar. */
+(function setupCprBeepWatcher() {
+  const interval = 250; // ms
+  const watcher = setInterval(() => {
+    if (typeof cprRemaining !== 'undefined') {
+      if (cprRemaining <= 0) {
+        _tryPlayCprBeep();
+        clearInterval(watcher);
+      }
+    }
+  }, interval);
+
+  /* Eğer kullanıcı sayfada etkileşimde bulunursa (tarayıcı autoplay kısıtlarını aşmak için),
+     audio'yu "unlock" etmek için küçük bir dokunma dinleyicisi ekleyebiliriz. */
+  function _unlockAudioOnFirstInteraction() {
+    try {
+      _cprBeepAudio.play().then(() => {
+        _cprBeepAudio.pause();
+        _cprBeepAudio.currentTime = 0;
+      }).catch(()=>{});
+    } catch(e){}
+    window.removeEventListener('click', _unlockAudioOnFirstInteraction);
+    window.removeEventListener('keydown', _unlockAudioOnFirstInteraction);
+  }
+  window.addEventListener('click', _unlockAudioOnFirstInteraction, { once: true });
+  window.addEventListener('keydown', _unlockAudioOnFirstInteraction, { once: true });
+})();
