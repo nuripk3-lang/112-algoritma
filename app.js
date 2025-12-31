@@ -1,18 +1,20 @@
-// --- app.js (Tam sürüm: görsel kontrolü ve tüm iyileştirmeler dahil) ---
+// --- app.js (Yetişkin algoritmaları korunmuş, Çocuk algoritmaları ÇİLYAD detaylarıyla güncellenmiş tam sürüm) ---
 
-/* Algoritma verisi (mevcut içerik korunmuştur; gerektiğinde genişletilebilir) */
 const algorithmData = {
-  yetiskin: {
-    aks: { title: "🫀 Akut Koroner Sendrom (AKS)", steps: [
+   yetiskin: {
+    aks: { category: "cardiac", title: "🫀 Akut Koroner Sendrom (AKS)", steps: [
       {type:"step", text:"Güvenli çevre ve ABCDE değerlendirmesi yap."},
-      {type:"action", text:"Hemen 12 Derivasyonlu EKG çek ve ritmi yorumla."},
-      {type:"drug", text:"Aspirin: 160-325 mg (Çiğnetilerek verilir)."},
-      {type:"drug", text:"Nitrat (Sistolik KB > 90 ise): İsordil 5 mg SL veya Nitrolingual 0.4 mg spreyi; 3 doz sınırı."},
-      {type:"warning", text:"Sağ MI veya son 48 saatte PDE5 inhibitörü kullanımı varsa NİTRAT VERME!"},
-      {type:"drug", text:"Ağrı kontrolü: Morfin 2-4 mg IV (Gerekiyorsa, maksimum 10 mg)."},
-      {type:"step", text:"STEMI ise uygun merkeze nakil; KKM ile iletişim kur."}
+      {type:"action", text:"✅ Hemen 12 Derivasyonlu EKG çek ve ritmi yorumla (İlk 10 dakika hedefi)."},
+      {type:"drug", text:"💊 Aspirin: 300 mg (Çiğnetilerek verilir; kontrendikasyon yoksa)."},
+      {type:"drug", text:"💊 Nitrat (Sistolik KB > 90 ise): İsordil 5 mg SL veya Nitrolingual 0.4 mg sprey; 5 dk arayla max 3 doz."},
+      {type:"warning", text:"⚠️ Sağ MI veya son 48 saatte PDE5 inhibitörü (ör. Viagra) kullanımı varsa NİTRAT VERME!"},
+      {type:"drug", text:"💊 Ağrı kontrolü: Morfin 2-4 mg IV (Yavaş infüzyon, gerekiyorsa tekrarlanır)."},
+      {type:"step", text:"🔹 STEMI ise: Uygun merkeze (PCI/Anjiyo merkezi) nakli başlat ve KKM ile iletişim kur."},
+      {type:"note", text:"ÖNEMLİ: Oksijen yalnızca SpO2 <%94 veya solunum sıkıntısı varsa verilir."},
+      {type:"note", text:"Sağ Ventrikül MI: İnferior MI (D2, D3, aVF) varsa sağ derivasyonları (V3R, V4R) kontrol et; hipotansiyon varsa SF ile sıvı yüklemesi düşün."},
+      {type:"note", text:"Damar Yolu: Anjiyo girişimi genellikle sağ koldan yapıldığı için tercihen sol koldan damar yolu aç."}
     ]},
-    astim: { title: "🫁 Astım Atağı", steps: [
+    astim: { category: "respiratory", title: "🫁 Astım Atağı", steps: [
       {type:"step", text:"SpO2 %94-98 olacak şekilde oksijen başla."},
       {type:"drug", text:"Salbutamol 2.5-5 mg Nebül; gerekirse tekrarla."},
       {type:"drug", text:"İpratropium 500 mcg Nebül (şiddetli atağa ek)."},
@@ -20,297 +22,319 @@ const algorithmData = {
       {type:"drug", text:"Magnezyum sülfat 2 g IV (20 dk infüzyon) — ağır/ölümcül atakta düşün."},
       {type:"warning", text:"Sessiz Toraks veya bilinç bozukluğu varsa erken entübasyon düşün."}
     ]},
-    koah: { title: "🌬️ KOAH Alevlenmesi", steps: [
+    koah: { category: "respiratory", title: "🌬️ KOAH Alevlenmesi", steps: [
       {type:"warning", text:"Hedef SpO2 %88-92 arası tutulmalıdır."},
       {type:"drug", text:"Salbutamol + İpratropium Kombine Nebül."},
       {type:"drug", text:"Prednol 40-80 mg IV."},
       {type:"step", text:"Solunum yetmezliği derinleşirse NIV veya entübasyon hazırlığı yap."}
     ]},
-    bradikardi: { title: "💓 Bradikardi", steps: [
-      {type:"decision", title:"Perfüzyon Bozuk mu?", text:"Hipotansiyon, bilinç değişikliği, şok bulgusu var mı?"},
-      {type:"drug", text:"Atropin 0.5-1 mg IV (Her 3-5 dk tekrarlanabilir, maksimum 3 mg)."},
-      {type:"step", text:"Atropin yanıtsızsa transkütan pacing veya inotrop destek düşün."},
-      {type:"drug", text:"Alternatif: Dopamin veya Adrenalin infüzyonu (2-10 mcg/kg/dk)."}
+    bradikardi: { category: "cardiac", title: "💓 Bradikardi", steps: [
+      {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap. (Havayolu ve solunumu destekle, monitorize et)."},
+      {type:"decision", title:"Perfüzyon Bozuk mu?", text:"✅ Perfüzyon Bozuk mu? Hipotansiyon, bilinç değişikliği, şok bulgusu, iskemik göğüs ağrısı veya akut kalp yetmezliği var mı?"},
+      {type:"drug", text:"💊 Atropin: 0.5 mg IV (Her 3-5 dakikada bir tekrarlanabilir, maksimum 3 mg)."},
+      {type:"step", text:"🔹 Atropin yanıtsızsa: Beklemeden Transkütan Pacing (TCP) hazırlığına başla veya inotrop destek düşün."},
+      {type:"drug", text:"💊 Alternatif İnfüzyonlar: Dopamin 2-10 mcg/kg/dk veya Adrenalin 2-10 mcg/kg/dk infüzyonu."},
+      {type:"step", text:"🔹 Nedene Yönelik Tedavi: Altta yatan nedeni (ilaç intoksikasyonu, elektrolit bozukluğu vb.) araştır ve uzman konsültasyonu iste."},
+      {type:"warning", text:"🚨 Asistoli Riski: Eğer Mobitz Tip II AV Blok, 3. Derece Kalp Bloğu veya 3 saniyeden uzun ventriküler duraklama varsa, Atropin yanıtını beklemeden doğrudan Pacing hazırlığı yap."},
+      {type:"warning", text:"Pacing ve Sedasyon: Transkütan Pacing (TCP) ağrılıdır; hasta uyanıksa sedasyon ve analjezi planla."},
+      {type:"warning", text:"Atropin Dozu: Atropin'in 0.5 mg'dan az dozlarda uygulanması paradoksal bradikardiye yol açabilir."},
+      {type:"warning", text:"İlaç Etkileşimleri: Kalp nakli yapılmış hastalarda Atropin etkisiz olabilir; bu durumda doğrudan pacing veya adrenalin/izoprenalin gibi ajanlar düşün."}
     ]},
-    tasikardi: { title: "⚡ Taşikardi", steps: [
-      {type:"decision", title:"Stabilite Kontrolü", text:"Şok, KY, göğüs ağrısı veya bilinç değişikliği varsa senkronize kardiyoversiyon."},
-      {type:"step", text:"Dar QRS & düzenli (SVT): vagal manevra -> Adenozin 6 mg IV hızlı; gerekirse 12 mg."},
-      {type:"drug", text:"Geniş QRS/VT şüphesi: Amiodaron 150 mg IV (10 dk infüzyon) veya ACLS protokolü uygula."}
+    tasikardi: { category: "cardiac", title: "⚡ Taşikardi", steps: [
+      {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap. (Oksijen desteği sağla, monitorize et, damar yolu aç)."},
+      {type:"decision", title:"Stabilite Kontrolü", text:"✅ Stabilite Kontrolü: Şok bulguları, Hipotansiyon, Akut Kalp Yetmezliği, İskemik Göğüs Ağrısı veya Bilinç değişikliği var mı?"},
+      {type:"action", text:"⚡ UNSTABİL ise: Vakit kaybetmeden Senkronize Kardiyoversiyon uygula. (Cihazı 'Sync' moduna almayı unutma!)."},
+      {type:"step", text:"🔹 Dar QRS & Düzenli (SVT Şüphesi): Hasta stabilse önce Vagal Manevralar uygula."},
+      {type:"drug", text:"💊 Adenozin: 6 mg IV hızlı bolus; yanıt yoksa 12 mg; yine yanıt yoksa bir kez daha 12 mg uygula. (Her doz sonrası 20 cc SF hızlıca verilir)."},
+      {type:"step", text:"🔹 Geniş QRS / VT Şüphesi: Hasta stabilse Amiodaron 300 mg IV (bazı protokollerde 150 mg ile başlanır; 10-20 dk içinde infüzyon yapılabilir)."},
+      {type:"step", text:"🔹 Ritim Kontrolü: 12 derivasyonlu EKG çekerek ritmi (Atrial Fibrilasyon, Flutter vb.) netleştir ve uzman konsültasyonu iste."},
+      {type:"note", text:"⚡ Senkronize Kardiyoversiyon Hazırlık: Hastayı bilgilendir ve mümkünse sedasyon/analjezi uygula."},
+      {type:"note", text:"Sync Modu: Defibrilatörü aç ve 'SYNC' tuşuna bas. Monitörde her R dalgasının üzerinde bir işaret olduğunu doğrula."},
+      {type:"note", text:"Enerji Seçimi: Dar Düzenli (SVT/A. Flutter): 50-100 J; Dar Düzensiz (A. Fibrilasyon): 120-200 J; Geniş Düzenli (VT): 100 J."},
+      {type:"warning", text:"🚨 Senkronizasyon Şart: Eğer cihaz 'Sync' modunda değilse, şok T dalgası üzerine denk gelerek hastayı VF'ye sokabilir."},
+      {type:"note", text:"Adenozin Uygulaması: Adenozin kısa yarı ömürlüdür; kalbe en yakın büyük venden (tercihen antekübital) uygulanmalı ve hemen arkasından hızlı flush yapılmalıdır."},
+      {type:"warning", text:"Amiodaron: VT vakalarında Amiodaron uygulanırken tansiyon yakından izlenmelidir (hipotansiyon yapabilir)."},
+      {type:"warning", text:"Nabızsız VT: Geniş kompleksli taşikardide nabız yoksa arrest protokolüne geç (şoklanabilir ritim protokolü)."}
     ]},
-    arrest: { title: "⚡ Kardiyak Arrest", steps: [
-      {type:"action", text:"KPR 30:2 başlat; kompresyon derinliği 5-6 cm, hız 100-120/dk."},
-      {type:"decision", title:"Ritim Analizi", text:"VF/nVT ise defibrilasyon; NEA/Asistoli ise adrenalin ver."},
-      {type:"drug", text:"Adrenalin 1 mg IV/IO (Her 3-5 dk)."},
-      {type:"drug", text:"Amiodaron 300 mg IV (ilk yükleme, 3. şok sonrası), 150 mg tekrar."},
-      {type:"step", text:"5H-5T nedenlerini değerlendir ve düzelt."}
+    arrest: { category: "cardiac", title: "⚡ Kardiyak Arrest", steps: [
+      {type:"action", text:"✅ KPR 30:2 başlat: Göğüs kompresyonu derinliği 5-6 cm, hız 100-120/dk. Tam geri gelmeye izin ver; kesintileri minimize et."},
+      {type:"action", text:"✅ Ritim Analizi: Defibrilatör bağlandığında ritmi değerlendir."},
+      {type:"decision", title:"VF / Nabızsız VT (Şoklanabilir)", text:"Hemen Şok uygula (Monofazik 360 J; Bifazik 150-200 J). Şoktan hemen sonra beklemeden 2 dk KPR yap."},
+      {type:"decision", title:"NEA / Asistoli (Şoklanamaz)", text:"Şok uygulama. Hemen 2 dk KPR yap ve en kısa sürede Adrenalin ver."},
+      {type:"drug", text:"💊 Adrenalin: 1 mg IV/IO (Her 3-5 dakikada bir; KPR döngüsü sırasında uygulanır)."},
+      {type:"drug", text:"💊 Amiodaron: VF/nVT devam ediyorsa 3. şok sonrası 300 mg IV/IO; hala devam ediyorsa 5. şok sonrası 150 mg IV/IO uygula."},
+      {type:"step", text:"🔹 5H - 5T nedenlerini değerlendir ve düzelt: Hipovolemi, Hipoksi, Asidoz, Elektrolit bozuklukları (H/K), Hipotermi; Tansiyon pnömotoraks, Tamponad, Toksinler, Pulmoner tromboz, Koroner tromboz."},
+      {type:"step", text:"✅ İleri Havayolu: Entübasyon veya SGA yerleştirilirse kompresyonu kesmeden dakikada 10 soluk (6 saniyede bir) ver."},
+      {type:"note", text:"EtCO2 İzlemi: Kapnografi varsa ani EtCO2 yükselmesi (>40 mmHg) ROSC için güvenilir belirtidir."},
+      {type:"warning", text:"🚨 Şoktan Sonra Nabız Bakma: Şok uygulandıktan hemen sonra nabız kontrolü yapma; doğrudan 2 dakika KPR'ye devam et. Nabız kontrolü yalnızca 2 dakikalık periyot sonunda ritim değişikliği varsa yapılır."},
+      {type:"note", text:"Yüksek Kaliteli KPR: Her 2 dakikada bir kompresyon yapan kişiyi değiştir; kesintileri en aza indir."},
+      {type:"note", text:"Adrenalin Zamanlaması: Şoklanamaz ritimlerde adrenalin mümkün olan en kısa sürede; şoklanabilir ritimlerde adrenalin genellikle 2. şoktan sonra başlanır."}
     ]},
-    hipovolemi: { title: "💧 Hipovolemik Şok", steps: [
-      {type:"action", text:"ABCDE, kanama kontrolü ve hızlı değerlendirme yap."},
-      {type:"drug", text:"IV geniş çaplı damar yolu aç; kristalloid bolus 500-1000 ml (hızlı) ver; gerekirse tekrarla."},
-      {type:"warning", text:"Travma ile ilişkili aktif kanama varsa cerrahi/kan transfüzyonu planla."}
+    hipovolemi: { category: "shock", title: "💧 Hipovolemik Şok", steps: [
+      {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap: Travmanın birincil bakısını tamamla, kanama odağını belirle."},
+      {type:"action", text:"✅ Kanamayı Durdur: Dış kanama varsa direkt bası, sıkı bandaj veya gerekirse turnike uygula."},
+      {type:"decision", title:"Şok Belirtileri", text:"✅ Şok belirtilerini kontrol et: Bilinç değişikliği, taşikardi, soğuk-nemli cilt, uzamış kapiller dolum zamanı var mı?"},
+      {type:"step", text:"🔹 Pozisyon ve Isı Kontrolü: Hastayı düz yatır (kontrendikasyon yoksa bacakları yükselt) ve hipotermiden korumak için üzerini ört."},
+      {type:"action", text:"✅ Yüksek Akımlı Oksijen: Oksijen desteği sağla ve SpO2 takibi yap."},
+      {type:"action", text:"💉 Damar Yolu: En az iki adet geniş çaplı (14-16 G) IV hat aç. IV açılamıyorsa IO (intraosseöz) yol dene."},
+      {type:"drug", text:"💊 Sıvı Resüsitasyonu (Erişkin): Başlangıç olarak 1 litre ısıtılmış izotonik kristaloid (SF/RL) ver; yanıtı değerlendir. Gerektiğinde tekrarla, ancak aşırı sıvıdan kaçın."},
+      {type:"drug", text:"💊 Sıvı Resüsitasyonu (Çocuk): 20 ml/kg izotonik kristaloid bolus uygula; yanıtı değerlendir ve gerektiğinde tekrarla."},
+      {type:"note", text:"🔹 Permisif Hipotansiyon: Kanama kontrol altına alınana kadar tansiyonu çok yükseltme; hedef sistolik KB genellikle 80-90 mmHg civarıdır (duruma göre kurum protokolü ile uyumlu hareket et)."},
+      {type:"warning", text:"🚨 Ölümcül Üçleme (Lethal Triad): Hipotermi, Asidoz ve Koagülopatiyi önlemek hayati önem taşır. Hastayı sıcak tutmak, kanama kontrolü ve uygun kan ürünleri yönetimi önceliklidir."},
+      {type:"note", text:"🔹 Gizli Kanama Odakları: Dışarıda kan yoksa Göğüs, Batın, Pelvis ve Uzun Kemikler (Femur) odaklan. Pelvis kırığı şüphesinde pelvik kemer kullan."},
+      {type:"note", text:"🔹 Nabız ve Tansiyon: Tansiyon düşmesi geç bir bulgudur; erken belirtiler taşikardi ve daralmış nabız basıncı olabilir."},
+      {type:"warning", text:"⚠️ Kristaloid Sınırı: Aşırı kristaloid verilmesi dilüsyonel koagülopatiye yol açabilir. 'Kontrollü sıvı' ve kanama kontrolü stratejisini takip et; gerektiğinde kan ürünleri ve cerrahi/embolizasyon planla."}
     ]},
-    vertigo: { title: "🌀 Vertigo", steps: [
+    crush: { category: "trauma", title: "🧱 Crush (Ezilme) Sendromu", steps: [
+      {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap: Olay yerinde ikincil çökme riskine karşı dikkatli ol."},
+      {type:"action", text:"✅ Kurtarma Öncesi Sıvı Resüsitasyonu: Ezilme altındaki ekstremite serbestleşmeden önce damar yolunu aç ve erişkinde 1 L/saat hızla izotonik SF başlat; çocukta 15-20 ml/kg/saat hızla başlat."},
+      {type:"action", text:"✅ Kompresyon Kaldırıldıktan Sonra: Bası kalktığı an açığa çıkacak toksinlerin (K+, miyoglobin vb.) dolaşıma karışacağını unutma; hızlı sıvı resüsitasyonuna agresif şekilde devam et."},
+      {type:"action", text:"💊 Hiperkalemi Yönetimi: EKG takibi yap; sivri T dalgaları veya geniş QRS varsa Kalsiyum Glukonat %10 10 ml IV (kalbi korumak için) uygula. İnsülin + dekstroz protokollerini düşün."},
+      {type:"action", text:"💊 Diğer Önlemler: Hiperkalemi riskine karşı sürekli EKG, idrar çıkışı takibi başlat (hedef erişkinde 100-200 ml/saat). Gerekirse idrar çıkışını artırmak için idrar sondası veya diüretik düşün."},
+      {type:"note", text:"⚠️ Sıvı Seçimi: Hipovolemiyi düzeltmek için potasyum içeren (ör. Laktatlı Ringer) sıvılardan kaçın; sadece izotonik SF kullan."},
+      {type:"warning", text:"🚨 Reperfüzyon Hasarı: Bası kalktığında dolaşıma karışacak toksinler ani metabolik bozukluklara yol açabilir; elektrolitleri, asidozu ve renal fonksiyonu yakından izle."},
+      {type:"note", text:"🔹 Böbrek Koruması: Myoglobinüri ve akut böbrek yetmezliği riskine karşı idrar çıkışını hedefle (100-200 ml/saat erişkin hedefi); gerektiğinde nefroloji/yoğun bakım ile koordinasyon."},
+      {type:"warning", text:"⚠️ İzlem ve Transfer: Ciddi ezilme vakalarında erken yoğun bakım ve nefroloji konsültasyonu; gerektiğinde hemodiyaliz hazırlığı yap." }
+    ]},
+    kafa: { category: "neuro", title: "🧠 Kafa Travması (Yetişkin)", steps: [
+      {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap: Olay yeri güvenliğini sağla, C-spine immobilizasyonunu düşün."},
+      {type:"action", text:"✅ Havayolu ve C-spine: Bilinci azalmış veya GKS ≤ 8 olan hastada erken entübasyon düşün; entübasyon sırasında C-spine immobilizasyonunu koru."},
+      {type:"decision", title:"GKS Değerlendirmesi", text:"GKS (Glasgow Coma Scale) hesapla; GKS ≤ 8 ise ileri havayolu ve hızlı nakil planla."},
+      {type:"action", text:"✅ Pupiller ve Nöro Muayene: Pupillerin büyüklüğünü, simetrisini ve ışık refleksini kontrol et; fokal nörolojik bulgular için ayrıntılı muayene yap."},
+      {type:"action", text:"✅ Vital ve Solunum Yönetimi: Oksijen ver; SpO2 hedefi ≥ 94% (entübasyon gerekiyorsa ventilasyon parametrelerine dikkat et). Hipoksi ve hipotansiyondan kaçın."},
+      {type:"action", text:"✅ Kan Basıncı ve Perfüzyon: Sistolik KB < 90 mmHg ise hipotansiyonun düzeltilmesi önceliklidir; hipotansiyon beyin perfüzyonunu bozar ve mortaliteyi artırır."},
+      {type:"step", text:"🔹 Kanama Kontrolü ve Yaralanma Değerlendirmesi: Aktif dış kanama varsa kontrol et; kafa derisi yaralanmaları kan kaybına neden olabilir."},
+      {type:"action", text:"✅ Görüntüleme: Stabil hastada hızlı BT kafa (non-contrast CT) çekilmesi için hazırlık yap; instabil hastada stabilizasyon önceliklidir."},
+      {type:"decision", title:"Cerrahi Gerekli mi?", text:"BT'de epidural/subdural hematom, büyük intrakraniyal kanama, kitlesel lezyon veya artan KİBAS bulguları varsa nöroşirürji konsültasyonu ve acil cerrahi değerlendirme gereklidir."},
+      {type:"action", text:"💊 İlaç ve Metabolik Yönetim: Antikoagülan/antiplatelet öyküsü varsa tersine çevirme (protrombin kompleks konsantresi, vitamin K, taze donmuş plazma vb.) planla; hiperglisemi ve hiponatremiden kaçın."},
+      {type:"action", text:"💊 KİBAS ve Herniasyon Bulguları: Ani pupiller asimetri, azalan bilinç, Cushing triadı (hipertansiyon, bradikardi, düzensiz solunum) varsa acil müdahale; gerekirse mannitol 0.5-1 g/kg IV veya hipertonik salin (3%) titrasyonla düşün (uzman yönlendirmesiyle)."},
+      {type:"step", text:"🔹 Entübasyon Notları: Entübasyon sırasında hiperventilasyon (PaCO2 < 30 mmHg) rutin olarak önerilmez; sadece akut herniasyon şüphesinde kısa süreli kontrollü hiperventilasyon düşünülebilir."},
+      {type:"note", text:"🔹 Transfer ve İzlem: Kafa travması olan hastalar için erken nöroşirürji/yoğun bakım koordinasyonu; stabilizasyon sonrası hızlı nakil planla."},
+      {type:"warning", text:"⚠️ Antikoagülanlar: Antikoagülan veya trombosit inhibitörü kullanan hastalarda kanama riski yüksek; tersine çevirme ve hematom progresyonu için erken iletişim şart."},
+      {type:"note", text:"🔹 Belgeleme: Olay mekanizması, bilinç kaybı süresi, nörolojik değişiklikler ve verilen ilaçlar/uygulamalar ayrıntılı olarak kaydedilmeli."}
+    ]},
+    vertigo: { category: "neuro", title: "🌀 Vertigo", steps: [
       {type:"step", text:"ABCDE, nörolojik muayene ve vital bulgular."},
       {type:"drug", text:"Metoklopramid 10 mg IV veya Ondansetron 4 mg IV."},
       {type:"warning", text:"Fokal nörolojik bulgu varsa inme ayırıcı tanısını düşün."}
     ]},
-    yanik: { title: "🔥 Yanık Algoritması", steps: [
+    yanik: { category: "trauma", title: "🔥 Yanık Algoritması", steps: [
       {type:"action", text:"ABCDE, yanma sürecini durdur, elbiseleri ve takıları çıkar."},
       {type:"step", text:"Yanık yüzdesini Dokuzlar Kuralı ile belirle (1. dereceyi sayma)."},
       {type:"drug", text:"Parkland formülü: 4 ml x kg x %yanık (ilk 8 saatte toplamın yarısı)."},
       {type:"warning", text:"İnhalasyon yanığı şüphesi varsa entübasyon hazırlığı yap."},
       {type:"drug", text:"Ağrı kontrolü: Morfin 0.1 mg/kg veya Fentanil 1-2 mcg/kg IV."}
     ]},
-    zehir: { title: "☠️ Zehirlenme", steps: [
+    zehir: { category: "toxicology", title: "☠️ Zehirlenme", steps: [
       {type:"action", text:"ABCDE, maruziyet öyküsü, madde tespiti; KKM ile iletişim kur."},
       {type:"step", text:"Gerekirse dekontaminasyon (aktif karbon) ve destek tedavi uygula."},
       {type:"warning", text:"Özel zehirlenmeler için antidot ve ileri destek gerekebilir."}
     ]},
-    nobet: { title: "🧠 Nöbet / Status Epilepticus", steps: [
-      {type:"action", text:"Travmadan koru, yan yatır, oksijen ver, kan şekeri ölç."},
-      {type:"drug", text:"Midazolam IM 5-10 mg (damar yoksa) veya 2.5-5 mg IV yavaş."},
-      {type:"drug", text:"Diazepam 5-10 mg IV yavaş."},
-      {type:"warning", text:"Nöbet 5 dakikayı geçerse status kabul edilir."}
+    nobet: { category: "neuro", title: "🧠 Nöbet / Status Epilepticus", steps: [
+      {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap: Hastanın çevresindeki tehlikeli eşyaları uzaklaştır, havayolu açıklığını sağla."},
+      {type:"action", text:"✅ Travmadan koru, yan yatır, oksijen ver: Hastayı nazikçe yere yatır (mümkünse sol yan / recovery pozisyonu), başını koru, yüksek akımlı oksijen başlat."},
+      {type:"action", text:"✅ Kan Şekeri Ölç: Hipoglisemi tetikleyebilir; kan şekeri düşükse protokole uygun dekstroz uygula."},
+      {type:"drug", text:"💊 Midazolam: Damar yolu yoksa 10 mg IM (70 kg üstü yetişkin için). Damar yolu varsa 2.5-5 mg IV (yavaş uygulama)."},
+      {type:"drug", text:"💊 Diazepam: 5-10 mg IV (yavaş uygulama, dakikada 2-5 mg hızında). Gerekirse 5-10 dk sonra doz tekrarlanabilir."},
+      {type:"decision", title:"Status Epilepticus Tanısı", text:"⚠️ Nöbet 5 dakikayı geçerse veya hasta bilinci açılmadan üst üste nöbet geçiriyorsa Status kabul et; ileri havayolu/yoğun bakım hazırlığı yap."},
+      {type:"warning", text:"⚠️ Solunum Depresyonu: Benzodiazepinler solunumu baskılayabilir. İlaç sonrası solunumu ve SpO2'yi yakından takip et; gerekirse BVM ile destek ver."},
+      {type:"note", text:"Gebelik (Eklampsi): Eğer hasta gebeliğinin 20. haftasının üzerindeyse ve nöbet geçiriyorsa, öncelikli tedavi benzodiazepin değil Magnezyum Sülfat'tır (4-6 g IV, 15-20 dk infüzyon)."},
+      {type:"step", text:"🔹 Eğer nöbet durmuyorsa: İleri antiepileptik (ör. levetirasetam, valproat, fenitoin) ve yoğun bakım/ nöroloji konsültasyonu düşün."}
     ]},
-    anafilaksi: { title: "⚠️ Anafilaksi", steps: [
-      {type:"action", text:"Hızlı ABC, oksijen, damar yolu aç."},
-      {type:"drug", text:"Adrenalin IM 0.3-0.5 mg (1:1000) hemen; 5-15 dk aralıklarla tekrarlanabilir."},
-      {type:"drug", text:"H1 Antihistaminik: Difenhidramin 25-50 mg IV/IM (adjunkt)."},
-      {type:"drug", text:"H2 Antihistaminik: Famotidin 20 mg IV (adjunkt)."},
-      {type:"drug", text:"Steroid: Metilprednizolon 1-2 mg/kg IV (maks ~125 mg)."},
-      {type:"warning", text:"Antihistaminikler epinefrinin yerini almaz."}
+    anafilaksi: { category: "allergy", title: "⚠️ Anafilaksi", steps: [
+      {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap: Havayolunu (ödem riski!) ve solunumu hızla kontrol et."},
+      {type:"action", text:"✅ Hızlı ABC, oksijen, damar yolu aç: Hastayı sırt üstü yatır ve bacaklarını kaldır (şok pozisyonu). Yüksek akımlı oksijen başlat."},
+      {type:"drug", text:"💊 Adrenalin (Epinefrin) IM: 0.3 - 0.5 mg (1:1000) hemen; vastus lateralis (uyluğun üst dış yan yüzü) kas içine uygulanır. Gerekirse 5-15 dk aralıklarla tekrarlanır."},
+      {type:"drug", text:"💊 Sıvı Resüsitasyonu: Hipotansiyon varsa 500-1000 ml kristaloid (SF/RL) hızlı infüzyonla ver."},
+      {type:"drug", text:"💊 H1 Antihistaminik: Difenhidramin 25-50 mg IV/IM (semptomları gidermek için yardımcı tedavi)."},
+      {type:"drug", text:"💊 H2 Antihistaminik: Famotidin 20 mg IV veya Ranitidin 50 mg IV (kurum protokolüne göre)."},
+      {type:"drug", text:"💊 Steroid: Metilprednizolon 1-2 mg/kg IV (Maksimum ~125 mg) — geç faz reaksiyonlarını önlemek için."},
+      {type:"warning", text:"⚠️ ÖNEMLİ: Antihistaminikler ve steroidler asla Adrenalin'in yerini almaz; tedaviyi geciktirmeyin."},
+      {type:"warning", text:"🚨 Adrenalin Yolu: Anafilakside ilk seçenek IM uygulamadır. IV adrenalin sadece arrest gelişmişse veya uzman kontrolünde, çok ciddi şok tablosunda titre edilerek düşük dozlarda uygulanır."},
+      {type:"warning", text:"⚠️ Hava Yolu Yönetimi: Dilde şişme, stridor veya ses kısıklığı varsa hava yolu hızla tıkanabilir; erken entübasyon veya cerrahi hava yolu hazırlığı yapın."},
+      {type:"warning", text:"⚠️ Mavi Yanıt (Beta-bloker kullananlar): Beta bloker kullanan hastalarda adrenalin etkisiz kalabilir; bu durumda Glukagon 1-5 mg IV düşünülebilir."},
+      {type:"note", text:"Gözlem Süresi: Başarılı müdahaleden sonra bile bifazik reaksiyon riski nedeniyle en az 4-12 saat hastanede gözlem önerilir." }
     ]},
-    travma: { title: "🚑 Travmalı Hasta", steps: [
+    travma: { category: "trauma", title: "🚑 Travmalı Hasta", steps: [
       {type:"action", text:"Olay yeri güvenliği, immobilizasyon, ABCDE, kanama kontrolü yap."},
       {type:"step", text:"Şok bulgusu varsa hızlı sıvı desteği ve uygun merkeze öncelikli nakil."},
       {type:"warning", text:"Kafa travması, toraks travması veya instabil pelvis varsa özel protokoller uygula."}
     ]},
-    crush: { title: "🧱 Crush Sendromu", steps: [
-      {type:"action", text:"Kompresyon kaldırıldıysa hızlı sıvı resüsitasyonu başlat."},
-      {type:"drug", text:"Hiperkalemi riski için EKG, kalsiyum glukonat 10% 10 ml IV (gerekirse), insülin + dekstroz protokollerini düşün."},
-      {type:"warning", text:"Myoglobinüri ve böbrek yetmezliği riskine karşı idrar çıkışını takip et."}
+    kafa: { category: "neuro", title: "🧠 Kafa Travması (Özet - Hızlı Eylem)", steps: [
+      {type:"step", text:"🔹 Olay yeri güvenliği ve C-spine immobilizasyonu; travma mekanizmasını kaydet."},
+      {type:"action", text:"✅ ABCDE: Havayolu (C-spine koruyarak), solunum, dolaşım, nörolojik durum (GKS) ve çevre kontrolü yap."},
+      {type:"decision", title:"GKS ve Havayolu Kararı", text:"GKS ≤ 8 ise erken entübasyon; entübasyon sırasında C-spine immobilizasyonunu koru."},
+      {type:"action", text:"✅ Pupiller, motor yanıt ve fokal bulguları değerlendir; ani değişiklikler herniasyon belirtisi olabilir."},
+      {type:"action", text:"✅ Oksijen ve ventilasyon: SpO2 hedefi ≥94%; hipoksi ve hipotansiyondan kaçın."},
+      {type:"action", text:"✅ Kan basıncını koru: Sistolik KB < 90 mmHg ise agresif sıvı ve kan ürünleri yönetimi; hipotansiyon beyin perfüzyonunu bozar."},
+      {type:"action", text:"✅ Hızlı görüntüleme: Stabil hastada non-contrast BT kafa; instabil hastada stabilizasyon öncelikli."},
+      {type:"action", text:"💊 KİBAS/Heriasyon şüphesinde: Nöroşirürji ile eş zamanlı iletişim; gerekirse mannitol 0.5-1 g/kg IV veya hipertonik salin (3%) uzman yönlendirmesiyle düşün."},
+      {type:"action", text:"✅ Antikoagülan/antiplatelet öyküsü varsa tersine çevirme planla ve hematom progresyonunu izle."},
+      {type:"step", text:"🔹 Transfer: Erken nöroşirürji/yoğun bakım koordinasyonu; cerrahi endikasyon varsa acil nakil."},
+      {type:"note", text:"🔹 Entübasyon ve ventilasyon sırasında aşırı hiperventilasyondan kaçın; sadece akut herniasyon durumunda kısa süreli kontrollü hiperventilasyon düşünülebilir."},
+      {type:"warning", text:"⚠️ Belgeleme: Olay mekanizması, bilinç kaybı süresi, nörolojik değişiklikler ve uygulanan müdahaleler ayrıntılı kaydedilmeli."}
     ]},
-    kafa: { title: "🧠 Kafa Travması", steps: [
-      {type:"action", text:"ABCDE, GKS değerlendirmesi, pupil muayenesi ve nörolojik takip yap."},
-      {type:"warning", text:"GKS ≤ 8 ise entübasyon düşün; artan KİBAS bulgularında hızlı nakil."},
-      {type:"step", text:"Antikoagülan kullanımı varsa kanama riski ve tersine çevirme planla."}
-    ]}
   },
 
+
   cocuk: {
-    aks: { title: "🫀 Pediatrik AKS (Nadir)", steps: [
-      {type:"step", text:"ABCDE, EKG ve vital takip; ağrı kontrolü ve uygun merkeze nakil düşün."}
+    astim: { category: "respiratory", title: "🫁 Pediyatrik Astım (ÇİLYAD)", steps: [
+      {type:"step", text:"🔹 Hızlı Değerlendirme: Bilinç durumu, konuşma yeteneği (kelime kelime mi?), yardımcı solunum kası kullanımı ve SpO2 değerine bak."},
+      {type:"action", text:"✅ Oksijen: SpO2 > %94 olacak şekilde nemlendirilmiş oksijen başla."},
+      {type:"drug", text:"💊 Salbutamol: <20 kg için 2.5 mg; ≥20 kg için 5 mg Nebül (İlk saat 20 dk arayla 3 doz yapılabilir)."},
+      {type:"drug", text:"💊 İpratropium Bromür: <20 kg için 250 mcg; ≥20 kg için 500 mcg Nebül (Orta ve ağır ataklarda ekle)."},
+      {type:"drug", text:"💊 Metilprednizolon: 1-2 mg/kg IV veya IM (Maksimum 60 mg)."},
+      {type:"warning", text:"⚠️ Magnezyum Sülfat: Ağır ve tedaviye yanıtsız atakta 40-50 mg/kg (Maks 2 g), 20 dk IV infüzyon (Monitörize)."},
+      {type:"note", text:"📝 ÖNEMLİ: Sessiz Akciğer (ronküs duyulmaması) ağır atak belirtisi olabilir. Dehidratasyon yoksa aşırı sıvıdan kaçın."}
     ]},
-    astim: { title: "🫁 Pediyatrik Astım", steps: [
-      {type:"drug", text:"Salbutamol: <20 kg 2.5 mg; ≥20 kg 5 mg Nebül."},
-      {type:"drug", text:"İpratropium: <20 kg 250 mcg; ≥20 kg 500 mcg Nebül."},
-      {type:"drug", text:"Metilprednizolon 1 mg/kg IV veya IM (Maks 60 mg)."},
-      {type:"warning", text:"Yanıt yoksa Magnezyum Sülfat 40-50 mg/kg (maks 2 g) 20 dk infüzyon düşünülebilir."}
+    bradikardi: { category: "cardiac", title: "💓 Pediatrik Bradikardi (ÇİLYAD)", steps: [
+      {type:"step", text:"🔹 ABCDE & Havayolu: Havayolunu aç, oksijen ver ve gerekirse BVM ile solut. Çocukta bradikardi genellikle hipoksiktir."},
+      {type:"action", text:"✅ KPR Kararı: Oksijen ve ventilasyona rağmen nabız < 60/dk ve perfüzyon bozukluğu (şok, bilinç değişikliği) varsa KPR BAŞLAT."},
+      {type:"drug", text:"💊 Adrenalin (İlk Tercih): 0.01 mg/kg (1:10.000 formdan 0.1 ml/kg) IV/IO. Her 3-5 dakikada bir."},
+      {type:"drug", text:"💊 Atropin: Vagal tonus artışı (entübasyon vb.) veya primer AV blok varsa 0.02 mg/kg IV/IO (Min: 0.1 mg, Maks Tek Doz: 0.5 mg)."},
+      {type:"note", text:"📝 ÇİLYAD Analizi: Çocuklarda bradikardi yönetiminde Adrenalin, Atropin'den önce gelir. Önce mutlaka iyi havalandır."}
     ]},
-    koah: { title: "🌬️ Pediatrik KOAH", steps: [
-      {type:"step", text:"SpO2 hedefi yaşa göre ayarla; destekleyici oksijen ve nebül tedavisi uygula."}
+    tasikardi: { category: "cardiac", title: "⚡ Pediatrik Taşikardi (ÇİLYAD)", steps: [
+      {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap, oksijen sağla ve monitörize et."},
+      {type:"decision", title:"Stabilite Kontrolü", text:"Şok bulgusu, bilinç değişikliği veya kalp yetmezliği var mı?"},
+      {type:"action", text:"⚡ UNSTABİL (Şok/Bilinç Bozuk): Senkronize Kardiyoversiyon uygula. İlk doz 0.5-1 J/kg; yanıt yoksa 2 J/kg."},
+      {type:"step", text:"🔹 STABİL Dar QRS (SVT): Vagal Manevralar (Yüze buz torbası veya ıkındırma)."},
+      {type:"drug", text:"💊 Adenozin (Stabil SVT): 0.1 mg/kg hızlı bolus (Maks 6 mg). Yanıt yoksa 0.2 mg/kg (Maks 12 mg)."},
+      {type:"drug", text:"💊 STABİL Geniş QRS (VT): Amiodaron 5 mg/kg (20-60 dk infüzyon)."},
+      {type:"note", text:"📝 Adenozin Notu: Kalbe en yakın damardan, hızlı bolus ve arkasından SF puşesi ile uygulanmalıdır."}
     ]},
-    bradikardi: { title: "💓 Pediatrik Bradikardi", steps: [
-      {type:"action", text:"ABCDE, oksijen, ventilasyon desteği; KŞ kontrolü."},
-      {type:"drug", text:"Atropin 0.02 mg/kg IV (min 0.1 mg, maks 1 mg)."}
+    arrest: { category: "cardiac", title: "⚡ Pediyatrik Arrest (ÇİLYAD)", steps: [
+      {type:"action", text:"✅ KPR Başlat: Yanıt yok, solunum yok/anormal ise. İki kurtarıcı 15:2; tek kurtarıcı 30:2."},
+      {type:"action", text:"✅ Nabız Kontrolü: Nabız < 60/dk ve perfüzyon bozuksa arrest kabul et ve KPR'ye başla."},
+      {type:"decision", title:"Ritim Analizi", text:"VF / nVT (Şoklanabilir) ise Defibrilasyon uygula."},
+      {type:"action", text:"⚡ Defibrilasyon: İlk şok 2 J/kg, ikinci şok 4 J/kg, sonraki şoklar 4-10 J/kg."},
+      {type:"drug", text:"💊 Adrenalin: 0.01 mg/kg IV/IO (1:10.000 formdan 0.1 ml/kg). Her 3-5 dakikada bir."},
+      {type:"drug", text:"💊 Amiodaron: VF/nVT devam ediyorsa 3. ve 5. şok sonrası 5 mg/kg IV/IO."},
+      {type:"note", text:"📝 6H - 5T: Çocuklarda özellikle Hipoglisemi ve Hipoksi nedenlerini hemen tara."}
     ]},
-    tasikardi: { title: "⚡ Pediatrik Taşikardi", steps: [
-      {type:"decision", title:"Stabil mi?", text:"Şok, bilinç değişikliği, göğüs ağrısı varsa senkronize kardiyoversiyon."},
-      {type:"drug", text:"Adenozin 0.1 mg/kg IV (maks 6 mg) hızlı bolus; gerekirse 0.2 mg/kg."}
+    hipovolemi: { category: "shock", title: "💧 Pediatrik Hipovolemik Şok (ÇİLYAD)", steps: [
+      {type:"step", text:"🔹 ABCDE & Klinik: Bilinç, kapiller dolum (>2 sn), nabız kalitesi ve idrar çıkışını kontrol et."},
+      {type:"action", text:"✅ Sıvı Bolusu: 20 ml/kg İzotonik kristaloid (SF veya RL) 5-20 dk içinde hızlıca ver."},
+      {type:"action", text:"✅ Değerlendirme: Yanıt yoksa bolusu 3 kez (toplam 60 ml/kg'a kadar) tekrarla."},
+      {type:"drug", text:"💊 Kan Transfüzyonu: 40-60 ml/kg kristaloide rağmen instabilite (özellikle kanamada) sürüyorsa 10 ml/kg ES ver."},
+      {type:"warning", text:"⚠️ DİKKAT: Hipotansiyon çocukta ŞOKUN ÇOK GEÇ BULGUSUDUR. Taşikardi ve perfüzyon bozukluğuna odaklan."},
+      {type:"note", text:"📝 Kardiyojenik Şok şüphesi varsa (Hepatomegali, raller) bolusu 5-10 ml/kg tut ve yavaş ver."}
     ]},
-    arrest: { title: "⚡ Pediyatrik Arrest", steps: [
-      {type:"action", text:"KPR 15:2 (iki kurtarıcı) veya 30:2 (tek kurtarıcı)."},
-      {type:"step", text:"Defibrilasyon: 2 J/kg ilk şok, 4 J/kg ikinci, sonraki maks 10 J/kg."},
-      {type:"drug", text:"Adrenalin 0.01 mg/kg IV/IO (1:10.000 formdan 0.1 ml/kg)."}
+    crush: { category: "trauma", title: "🧱 Pediatrik Crush Sendromu (ÇİLYAD)", steps: [
+      {type:"step", text:"🔹 Olay yeri güvenliği ve ABCDE. Enkaz altında müdahale hayatidir."},
+      {type:"action", text:"✅ Kurtarma Öncesi: Ekstremite serbestleşmeden damar yolu aç, 15-20 ml/kg/saat (veya 1 L/saat) Isotonik SF başla."},
+      {type:"action", text:"✅ Kompresyon Sonrası: Bası kalkınca toksinler yayılacaktır (Reperfüzyon). Sıvı tedavisine agresif devam et."},
+      {type:"drug", text:"💊 Hiperkalemi: EKG'de sivri T veya geniş QRS varsa Kalsiyum Glukonat %10 10 ml IV uygula."},
+      {type:"drug", text:"💊 Potasyum Yönetimi: İnsülin + Dekstroz veya Salbutamol nebül düşün."},
+      {type:"note", text:"⚠️ Sadece İZOTONİK SF kullan; Potasyum içeren (RL vb.) sıvılar kesinlikle yasaktır."}
     ]},
-    hipovolemi: { title: "💧 Pediatrik Hipovolemik Şok", steps: [
-      {type:"action", text:"Kristalloid bolus 20 ml/kg IV hızlı; yanıt yoksa tekrarla ve kan transfüzyonu düşün." }
+    kafa: { category: "neuro", title: "🧠 Pediatrik Kafa Travması", steps: [
+      {type:"step", text:"🔹 ABCDE ve Servikal Stabilizasyon. Çocuklarda baş büyük olduğu için 'Koklama Pozisyonu'na dikkat."},
+      {type:"action", text:"✅ Nörolojik Değerlendirme: Pediatrik GKS skorla, pupilleri kontrol et. GKS ≤ 8 ise entübe et."},
+      {type:"action", text:"✅ Hedefler: İkincil hasarı önlemek için Sistolik KB > 90-110 mmHg, SpO2 ≥ %94 tut."},
+      {type:"warning", text:"⚠️ KİBAS: Fışkırır kusma, bradikardi, hipertansiyon varsa hızlı nakil. Cushing Triadı tehlikelidir."},
+      {type:"note", text:"📝 Sıvı Seçimi: Beyin ödemini artırabileceği için Dekstrozlu sıvılardan (hipoglisemi yoksa) kaçın; SF tercih et."}
     ]},
-    vertigo: { title: "🌀 Pediatrik Vertigo", steps: [
-      {type:"drug", text:"Ondansetron 0.1 mg/kg IV (maks 4 mg) — bulantı varsa."}
+    nobet: { category: "neuro", title: "🧠 Pediyatrik Nöbet (ÇİLYAD)", steps: [
+      {type:"step", text:"🔹 Güvenli çevre, ABCDE, havayolu açıklığı ve %100 oksijen başla."},
+      {type:"action", text:"✅ Kan Şekeri: KŞ < 60 mg/dL ise bebekte %10 Dekstroz 2-5 ml/kg; çocukta %10-25 Dekstroz ver."},
+      {type:"drug", text:"💊 IV Yol Varsa (0-5. dk): Midazolam 0.1-0.2 mg/kg (Maks 5 mg) veya Diazepam 0.2 mg/kg IV."},
+      {type:"drug", text:"💊 IV Yol Yoksa: Rektal Diazepam 0.3-0.5 mg/kg veya IM/Bukkal/Nazal Midazolam 0.2 mg/kg."},
+      {type:"action", text:"✅ 5. Dakikada Durmazsa: Benzodiazepin dozunu bir kez daha tekrarla."},
+      {type:"drug", text:"💊 İkinci Basamak (Dirençli): Fenitoin 20 mg/kg (SF içinde, yavaş infüzyon)."},
+      {type:"note", text:"📝 Status Epileptikus: 5 dakikadan uzun süren nöbet acildir. Ateş varsa agresif düşürülmelidir."}
     ]},
-    yanik: { title: "🔥 Pediatrik Yanık", steps: [
-      {type:"step", text:"Modifiye Dokuzlar ile alan hesabı yap; hipotermiye dikkat."},
-      {type:"drug", text:"Sıvı: 3-4 ml x kg x %yanık (ilk 24 saatte, izotonik)."},
-      {type:"warning", text:"Avuç içi kuralı: Çocuğun el ayası vücudunun ~%1'idir."}
+    anafilaksi: { category: "allergy", title: "⚠️ Pediatrik Anafilaksi (ÇİLYAD)", steps: [
+      {type:"step", text:"🔹 Tanı: Ani başlayan deri bulguları + Solunum sıkıntısı/Stridor/Hipotansiyon/Kusma."},
+      {type:"action", text:"✅ Pozisyon: Sırtüstü yatır, bacakları yükselt. %100 Oksijen başla."},
+      {type:"drug", text:"💊 ADRENALİN (1/1000): 0.01 mg/kg (Maks 0.3 mg) İM (Uyluk üst-dış yanından)."},
+      {type:"action", text:"✅ Tekrar: Düzelme yoksa 5 dakikada bir, en fazla 3 kez tekrarla."},
+      {type:"drug", text:"💊 Sıvı: Hipotansiyon/Şok varsa 20 ml/kg İzotonik SF bolus yükle."},
+      {type:"drug", text:"💊 Ek İlaçlar: Feniramin 1 mg/kg, Ranitidin 1 mg/kg ve Metilprednizolon 1-2 mg/kg IV."},
+      {type:"warning", text:"🚨 DİKKAT: İM Adrenalin en güvenli ve hızlı yoldur. Antihistaminik adrenalin yerine geçmez!"}
     ]},
-    zehir: { title: "☠️ Pediatrik Zehirlenme", steps: [
-      {type:"action", text:"Maruziyet öyküsü, madde tespiti; ABCDE ve KŞ kontrolü."},
-      {type:"drug", text:"Difenhidramin 1 mg/kg IV/IM (maks 50 mg) H1 olarak düşünülebilir; antidotlar KKM ile koordine edilir." }
-    ]},
-    anafilaksi: { title: "⚠️ Pediatrik Anafilaksi", steps: [
-      {type:"action", text:"Hızlı ABC, oksijen, damar yolu aç."},
-      {type:"drug", text:"Adrenalin IM 0.01 mg/kg (1:1000), maksimum 0.3 mg; tekrarlanabilir."},
-      {type:"drug", text:"H1 Antihistaminik: Difenhidramin 1 mg/kg IV/IM (maks 50 mg)."},
-      {type:"drug", text:"H2 Antihistaminik: Famotidin 0.5 mg/kg IV (kurum protokolüne göre)."},
-      {type:"drug", text:"Steroid: Metilprednizolon 1 mg/kg IV (maks ~60 mg pediatrik)."}
-    ]},
-    travma: { title: "🚑 Pediatrik Travma", steps: [
-      {type:"action", text:"Olay yeri güvenliği, immobilizasyon, ABCDE, kanama kontrolü yap."},
-      {type:"warning", text:"Çocuklarda hipotermiye dikkat; ısıtma ve hızlı nakil planla."}
-    ]},
-    crush: { title: "🧱 Pediatrik Crush Sendromu", steps: [
-      {type:"action", text:"Kompresyon kaldırıldıysa sıvı desteği başlat (20 ml/kg kristalloid)."},
-      {type:"warning", text:"Hiperkalemi ve böbrek yetmezliği riskine karşı takip et."}
-    ]},
-    kafa: { title: "🧠 Pediatrik Kafa Travması", steps: [
-      {type:"action", text:"GKS, pupil, nörolojik takip; ciddi ise entübasyon ve hızlı nakil."},
-      {type:"warning", text:"Bebeklerde kusma, uyku hali, nöbet gibi bulgular önemlidir."}
-    ]},
-    nobet: { title: "🧠 Pediyatrik Nöbet", steps: [
-      {type:"action", text:"ABCDE, havayolu güvenliği, KŞ ölçümü; KŞ <60 mg/dL ise dekstroz ver."},
-      {type:"drug", text:"Diazepam 0.2 mg/kg IV veya 0.5 mg/kg rektal (maks 10 mg)."},
-      {type:"drug", text:"Midazolam 0.1 mg/kg IV veya 0.2 mg/kg IM/bukkal."}
+    yanik: { category: "trauma", title: "🔥 Pediatrik Yanık (ÇİLYAD)", steps: [
+      {type:"action", text:"🔹 Yanmayı durdur, elbiseleri/takıları çıkar. Çeşme suyuyla 10-20 dk soğut (Buz kullanma)."},
+      {type:"step", text:"✅ Alan Hesabı: Modifiye Dokuzlar veya Avuç İçi kuralı (%1). 1. dereceyi sayma."},
+      {type:"drug", text:"💊 Sıvı (Parkland): 4 ml x kg x %Yanık (İlk yarısı 8 saatte). Tercihen Ringer Laktat."},
+      {type:"action", text:"✅ Yara Bakımı: Temiz, kuru örtüyle kapat. Kimyasal yanığı bol suyla yıka."},
+      {type:"warning", text:"⚠️ Hipotermi Riski: Çocuklarda vücut yüzeyi geniştir, soğutma sonrası hemen ört ve sıcak tut."},
+      {type:"note", text:"📝 İnhalasyon: Yüzde is, ses kısıklığı varsa erken entübasyon hazırlığı yap."}
     ]}
   }
 };
 
-/* Yardımcı: HTML escape */
+// --- Yardımcı Fonksiyonlar ve UI Mantığı ---
+
 function escapeHtml(str) {
   if (!str && str !== 0) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-/* Görsel kontrolü: verilen yolun geçerli bir resim olup olmadığını test eder */
-function imageExists(src) {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = encodeURI(src);
-  });
-}
-
-/* Arama: data-key, data-tags ve buton metnine göre filtreler */
 function searchAlgo() {
-  const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  document.querySelectorAll("button").forEach(btn => {
-    const onclick = btn.getAttribute("onclick") || "";
-    if (!onclick.includes("showAlgo")) return;
-    const key = (btn.getAttribute("data-key") || '').toLowerCase();
-    const tags = (btn.getAttribute("data-tags") || '').toLowerCase();
+  const q = document.getElementById("searchInput") ? document.getElementById("searchInput").value.trim().toLowerCase() : '';
+  document.querySelectorAll("button[onclick*='showAlgo']").forEach(btn => {
     const text = (btn.textContent || btn.innerText || '').toLowerCase();
-    const match = !q || text.includes(q) || key.includes(q) || tags.includes(q);
+    const match = !q || text.includes(q);
     btn.style.display = match ? 'inline-block' : 'none';
   });
 }
 
-/* Algoritma gösterme: async olarak görsel kontrolü yapar ve içerik ekler */
-async function showAlgo(key, grupName) {
-  const grupKey = (grupName && grupName.toLowerCase().startsWith('y')) ? 'yetiskin' : 'cocuk';
-  const algo = (algorithmData[grupKey] || {})[key];
-  const contentEl = document.getElementById("content");
-  if (!algo) {
-    contentEl.innerHTML = `<button class="back-btn" onclick="clearContent()">⬅️ Geri Dön</button>
-                           <div class="step-box">Bu algoritma için veri bulunamadı.</div>`;
+function showAlgo(key, grupName) {
+  try {
+    const grupKey = (grupName && grupName.toLowerCase().startsWith('y')) ? 'yetiskin' : 'cocuk';
+    const algo = (algorithmData[grupKey] || {})[key.toLowerCase().trim()];
+    const contentEl = document.getElementById("content");
+    if (!contentEl || !algo) return;
+
+    let html = `<button class="back-btn" onclick="clearContent()">⬅️ Geri Dön</button>
+                <h2 style="color:#b91c1c; margin-bottom:12px;">${escapeHtml(algo.title)}</h2>
+                <div class="algo-container">`;
+
+    algo.steps.forEach(step => {
+      const typeClass = step.type + "-box";
+      let icon = '🔹 ';
+      if(step.type === 'drug') icon = '💊 ';
+      else if(step.type === 'warning') icon = '⚠️ ';
+      else if(step.type === 'action') icon = '✅ ';
+      else if(step.type === 'note') icon = '📝 ';
+      
+      html += `<div class="${typeClass}">${step.type === 'decision' ? `<strong>${escapeHtml(step.title)}</strong><div>${escapeHtml(step.text)}</div>` : icon + escapeHtml(step.text)}</div>`;
+    });
+
+    html += `</div>`;
+    contentEl.innerHTML = html;
     contentEl.style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return;
-  }
-
-  let html = `<button class="back-btn" onclick="clearContent()">⬅️ Geri Dön</button>
-              <h2 style="color:#b91c1c; margin-bottom:12px;">${escapeHtml(algo.title)}</h2>
-              <div class="algo-container">`;
-
-  algo.steps.forEach(step => {
-    const titlePart = step.title ? `<span class="decision-title">${escapeHtml(step.title)}</span>` : '';
-    if (step.type === 'drug') {
-      html += `<div class="drug-box">💊 ${titlePart}${escapeHtml(step.text)}</div>`;
-    } else if (step.type === 'warning') {
-      html += `<div class="warning-box">⚠️ ${titlePart}${escapeHtml(step.text)}</div>`;
-    } else if (step.type === 'decision') {
-      html += `<div class="decision-box"><strong>${escapeHtml(step.title)}</strong><div style="margin-top:6px;">${escapeHtml(step.text)}</div></div>`;
-    } else if (step.type === 'action') {
-      html += `<div class="step-box">✅ ${titlePart}${escapeHtml(step.text)}</div>`;
-    } else {
-      html += `<div class="step-box">🔹 ${titlePart}${escapeHtml(step.text)}</div>`;
-    }
-  });
-
-  // Yanık için görsel ekleme mantığı
-  if (key === 'yanik') {
-    // önerilen dosya adları (aşağıda ayrıca listelenecek)
-    const resimYetişkin = "img/yanik_yuzdesi.jpg";
-    const resimCocuk = "img/yanik_cocuk.jpg";
-    const chosen = (grupKey === 'yetiskin') ? resimYetişkin : resimCocuk;
-    const exists = await imageExists(chosen);
-    if (exists) {
-      html += `<div style="margin-top:14px; padding:12px; background:#fff; border-radius:12px; text-align:center;">
-                 <h4 style="margin:0 0 8px 0; color:#1e40af;">📊 Alan Hesaplama Rehberi</h4>
-                 <img src="${encodeURI(chosen)}" alt="Yanık Şeması" style="max-width:100%; height:auto; border-radius:8px; border:1px solid #eee;">
-               </div>`;
-    } else {
-      html += `<div style="margin-top:14px; padding:12px; background:#fff; border-radius:12px; text-align:center;">
-                 <h4 style="margin:0 0 8px 0; color:#1e40af;">📊 Alan Hesaplama Rehberi</h4>
-                 <div class="warning-box">Görsel bulunamadı. Lütfen 'img' klasörünü ve dosya adını kontrol edin.</div>
-               </div>`;
-    }
-  }
-
-  html += `</div>`;
-  contentEl.innerHTML = html;
-  contentEl.style.display = "block";
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+    contentEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) { console.error(e); }
 }
 
-/* Çocuk doz hesaplayıcı */
 function hesaplaCocukDoz() {
-  const input = document.getElementById("kiloInput");
+  const k = Number(document.getElementById("kiloInput").value);
   const out = document.getElementById("dozSonuc");
-  const k = Number(input.value);
-  if (!input.value || isNaN(k) || k <= 0) {
-    out.innerHTML = '';
-    return;
-  }
-  if (k > 200) {
-    out.innerHTML = `<div class="warning-box">Girilen kilo çok yüksek görünüyor. Lütfen kontrol edin.</div>`;
-    return;
-  }
-
-  const diazepamIV = (0.2 * k);
-  const diazepamRect = (0.5 * k);
-  const adrenalinMg = (0.01 * k);
-  const dekstrozMin = Math.round(2 * k);
-  const dekstrozMax = Math.round(5 * k);
-  const sfBolus = Math.round(20 * k);
-  const parasetamol = Math.round(15 * k);
-
-  out.innerHTML = `<div style="background:#fff; padding:12px; border-radius:12px; border-top:6px solid #b91c1c;">
-    <h3 style="margin-top:0;">💉 ${k} kg İçin Kritik Dozlar (Hızlı Referans)</h3>
-    <p><strong>Diazepam (IV):</strong> ${diazepamIV.toFixed(1)} mg</p>
-    <p><strong>Diazepam (Rektal):</strong> ${diazepamRect.toFixed(1)} mg</p>
-    <p><strong>Adrenalin (Arrest):</strong> ${adrenalinMg.toFixed(3)} mg (1:10.000 formdan 0.1 ml/kg)</p>
-    <p><strong>Dekstroz %10:</strong> ${dekstrozMin} - ${dekstrozMax} ml IV</p>
-    <p><strong>SF Bolus:</strong> ${sfBolus} ml (20 ml/kg)</p>
-    <p><strong>Parasetamol:</strong> ${parasetamol} mg (tek doz)</p>
+  if (!k || k <= 0) return;
+  out.innerHTML = `<div class="note-box">
+    <h3>💉 ${k} kg İçin Kritik Dozlar</h3>
+    <p><strong>Adrenalin (Arrest - 1:10.000):</strong> ${(0.01 * k).toFixed(2)} mg (${(0.1 * k).toFixed(1)} ml)</p>
+    <p><strong>Adrenalin (Anafilaksi - İM 1:1000):</strong> ${(0.01 * k).toFixed(2)} mg (Maks 0.3 mg)</p>
+    <p><strong>SF Bolus (20 ml/kg):</strong> ${(20 * k)} ml</p>
+    <p><strong>Midazolam (Nöbet - 0.1 mg/kg):</strong> ${(0.1 * k).toFixed(1)} mg IV</p>
   </div>`;
 }
 
-/* Grup gösterme ve içerik temizleme */
-function showGroup(g) {
-  const yet = document.getElementById("yetiskin");
-  const coc = document.getElementById("cocuk");
-  const content = document.getElementById("content");
-  if (yet) yet.style.display = "none";
-  if (coc) coc.style.display = "none";
-  const target = document.getElementById(g);
-  if (target) target.style.display = "block";
-  if (content) content.style.display = "none";
-  document.getElementById("searchInput").value = "";
-  searchAlgo();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 function clearContent() {
-  const content = document.getElementById("content");
-  if (content) {
-    content.style.display = "none";
-    content.innerHTML = '';
-  }
+  const c = document.getElementById("content");
+  if (c) { c.style.display = "none"; c.innerHTML = ''; }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* CPR sayaçları */
+function showGroup(g) {
+  document.getElementById("yetiskin").style.display = g === 'yetiskin' ? "block" : "none";
+  document.getElementById("cocuk").style.display = g === 'cocuk' ? "block" : "none";
+  clearContent();
+}
+
+// CPR Sayacı Mantığı
 let cprInterval = null;
 let cprRemaining = 120;
 
@@ -327,9 +351,6 @@ function updateCPRDisplay() {
   if (cprRemaining <= 0 && alertEl) {
     alertEl.textContent = "🔔 2 dakika tamamlandı — ritim kontrolü ve ekip değişimi düşün.";
     stopCPR();
-    if (navigator.vibrate) {
-      try { navigator.vibrate([200,100,200]); } catch(e) {}
-    }
   } else if (alertEl) {
     alertEl.textContent = "";
   }
@@ -358,75 +379,6 @@ function resetCPR() {
   updateCPRDisplay();
 }
 
-/* Başlangıç ayarları */
 document.addEventListener('DOMContentLoaded', () => {
   updateCPRDisplay();
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'g' && !e.metaKey && !e.ctrlKey && !e.altKey) {
-      const s = document.getElementById('searchInput');
-      if (s) { s.focus(); e.preventDefault(); }
-    }
-    if (e.key === 'Escape') {
-      clearContent();
-      const s = document.getElementById('searchInput');
-      if (s) s.blur();
-    }
-  });
 });
-
-// --- CPR beep entegrasyonu (app.js sonuna ekle) ---
-/* beep dosyasını yükle (kullanıcının oluşturduğu sound klasörü ve beep.mp3) */
-const _cprBeepAudio = new Audio('sound/beep.mp3');
-_cprBeepAudio.preload = 'auto';
-
-/* Tek seferlik çalma kontrolü */
-let _cprBeepPlayed = false;
-
-/* Güvenli çalma denemesi (promise tabanlı hataları yakalar) */
-function _tryPlayCprBeep() {
-  if (_cprBeepPlayed) return;
-  try {
-    _cprBeepAudio.currentTime = 0;
-    const playPromise = _cprBeepAudio.play();
-    if (playPromise && typeof playPromise.then === 'function') {
-      playPromise.then(() => {
-        /* Başarılı çalma */
-      }).catch((err) => {
-        /* Otomatik oynatma kısıtlaması veya başka hata; sessizce yakala */
-        console.warn('Beep çalınamadı:', err);
-      });
-    }
-  } catch (e) {
-    console.warn('Beep oynatma hatası:', e);
-  }
-  _cprBeepPlayed = true;
-}
-
-/* Mevcut kodu değiştirmeden cprRemaining değişkenini izleyen hafif bir watcher.
-   cprRemaining <= 0 olduğunda beep çalar. */
-(function setupCprBeepWatcher() {
-  const interval = 250; // ms
-  const watcher = setInterval(() => {
-    if (typeof cprRemaining !== 'undefined') {
-      if (cprRemaining <= 0) {
-        _tryPlayCprBeep();
-        clearInterval(watcher);
-      }
-    }
-  }, interval);
-
-  /* Eğer kullanıcı sayfada etkileşimde bulunursa (tarayıcı autoplay kısıtlarını aşmak için),
-     audio'yu "unlock" etmek için küçük bir dokunma dinleyicisi ekleyebiliriz. */
-  function _unlockAudioOnFirstInteraction() {
-    try {
-      _cprBeepAudio.play().then(() => {
-        _cprBeepAudio.pause();
-        _cprBeepAudio.currentTime = 0;
-      }).catch(()=>{});
-    } catch(e){}
-    window.removeEventListener('click', _unlockAudioOnFirstInteraction);
-    window.removeEventListener('keydown', _unlockAudioOnFirstInteraction);
-  }
-  window.addEventListener('click', _unlockAudioOnFirstInteraction, { once: true });
-  window.addEventListener('keydown', _unlockAudioOnFirstInteraction, { once: true });
-})();
