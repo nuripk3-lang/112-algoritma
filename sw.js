@@ -7,7 +7,8 @@ const FILES_TO_CACHE = [
   "./index.html",
   "./style.css",
   "./app.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./sound/beep.mp3"
 ];
 
 // 📥 INSTALL – dosyaları cache'e al

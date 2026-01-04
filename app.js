@@ -478,18 +478,22 @@ function startCPR() {
   if (cprInterval) return;
   if (cprRemaining <= 0) cprRemaining = 120;
   
-  // Tarayıcının ses engellemesini kaldır
+  // MOBİL İÇİN KRİTİK DOKUNUŞ: 
+  // Kullanıcı butona bastığı an sesi sessizce "oynat-duraklat" yaparak kilidi açıyoruz.
+  beepSound.play().then(() => {
+      beepSound.pause();
+      beepSound.currentTime = 0;
+  }).catch(e => console.log("Ses uyandırılamadı"));
+
   if (audioCtx.state === 'suspended') { audioCtx.resume(); }
 
   updateCPRDisplay();
 
-  // 1. Geri Sayım Sayacı
   cprInterval = setInterval(() => {
     cprRemaining--;
     updateCPRDisplay();
   }, 1000);
 
-  // 2. Metronom (Dakikada 110 bası üretir)
   metronomeInterval = setInterval(() => {
     playTick();
   }, 545); 
