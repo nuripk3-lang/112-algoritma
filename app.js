@@ -118,17 +118,27 @@ const algorithmData = {
       {type:"drug", text:"Metoklopramid 10 mg IV veya Ondansetron 4 mg IV."},
       {type:"warning", text:"Fokal nörolojik bulgu varsa inme ayırıcı tanısını düşün."}
     ]},
-    yanik: { category: "trauma", title: "🔥 Yanık Algoritması", steps: [
-      {type:"action", text:"ABCDE, yanma sürecini durdur, elbiseleri ve takıları çıkar."},
-      {type:"step", text:"Yanık yüzdesini Dokuzlar Kuralı ile belirle (1. dereceyi sayma)."},
-      {type:"drug", text:"Parkland formülü: 4 ml x kg x %yanık (ilk 8 saatte toplamın yarısı)."},
-      {type:"warning", text:"İnhalasyon yanığı şüphesi varsa entübasyon hazırlığı yap."},
-      {type:"drug", text:"Ağrı kontrolü: Morfin 0.1 mg/kg veya Fentanil 1-2 mcg/kg IV."}
-    ]},
-    zehir: { category: "toxicology", title: "☠️ Zehirlenme", steps: [
-      {type:"action", text:"ABCDE, maruziyet öyküsü, madde tespiti; KKM ile iletişim kur."},
-      {type:"step", text:"Gerekirse dekontaminasyon (aktif karbon) ve destek tedavi uygula."},
-      {type:"warning", text:"Özel zehirlenmeler için antidot ve ileri destek gerekebilir."}
+    yanik: { 
+      category: "trauma", 
+      title: "🔥 Yanık Algoritması", 
+      image: "img/yanik_yuzdesi.jpg",
+      steps: [
+        {type:"action", text:"ABCDE, yanma sürecini durdur, elbiseleri ve takıları çıkar."},
+        {type:"step", text:"Yanık yüzdesini Dokuzlar Kuralı ile belirle (1. dereceyi sayma)."},
+        {type:"drug", text:"Parkland formülü: 4 ml x kg x %yanık (ilk 8 saatte toplamın yarısı)."},
+        {type:"warning", text:"İnhalasyon yanığı şüphesi varsa entübasyon hazırlığı yap."},
+        {type:"drug", text:"Ağrı kontrolü: Morfin 0.1 mg/kg veya Fentanil 1-2 mcg/kg IV."}
+      ]
+    },
+    zehir: { category: "toxicology", title: "🧪 Zehirlenme ve Madde İntoksikasyonu", steps: [
+      {type:"warning", text:"⚠️ Güvenlik: Kontaminasyon varsa KKE giy ve hastayı yıka. KŞ ölç!"},
+      {type:"step", text:"🔹 Opioid: Solunum baskılanmış ve miyozis varsa Nalokson (Yet: 0.4-2mg, Çoc: 0.01mg/kg) uygula."},
+      {type:"step", text:"🔹 Organofosfat: Sekresyonlar kuruyana dek Atropin (Yet: 1-3mg, Çoc: 0.05mg/kg) tekrarla."},
+      {type:"step", text:"🔹 Alkol: Wernicke riskine karşı glukozdan önce Tiamin 100mg ver. Ajitasyonda Diazepam düşün."},
+      {type:"drug", text:"💊 Uyarıcı: Ajitasyon ve hipertansiyon için Diazepam kullan; Kokainde Beta-Blokör KULLANMA."},
+      {type:"action", text:"✅ Hedef: ABCDE stabilizasyonu ve spesifik antidot ile sekresyon/solunum kontrolü."},
+      {type:"action", text:"✅ UZEMİ ARA 114 "}
+    
     ]},
     nobet: { category: "neuro", title: "🧠 Nöbet / Status Epilepticus", steps: [
       {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap: Hastanın çevresindeki tehlikeli eşyaları uzaklaştır, havayolu açıklığını sağla."},
@@ -159,21 +169,7 @@ const algorithmData = {
       {type:"action", text:"Olay yeri güvenliği, immobilizasyon, ABCDE, kanama kontrolü yap."},
       {type:"step", text:"Şok bulgusu varsa hızlı sıvı desteği ve uygun merkeze öncelikli nakil."},
       {type:"warning", text:"Kafa travması, toraks travması veya instabil pelvis varsa özel protokoller uygula."}
-    ]},
-    kafa: { category: "neuro", title: "🧠 Kafa Travması (Özet - Hızlı Eylem)", steps: [
-      {type:"step", text:"🔹 Olay yeri güvenliği ve C-spine immobilizasyonu; travma mekanizmasını kaydet."},
-      {type:"action", text:"✅ ABCDE: Havayolu (C-spine koruyarak), solunum, dolaşım, nörolojik durum (GKS) ve çevre kontrolü yap."},
-      {type:"decision", title:"GKS ve Havayolu Kararı", text:"GKS ≤ 8 ise erken entübasyon; entübasyon sırasında C-spine immobilizasyonunu koru."},
-      {type:"action", text:"✅ Pupiller, motor yanıt ve fokal bulguları değerlendir; ani değişiklikler herniasyon belirtisi olabilir."},
-      {type:"action", text:"✅ Oksijen ve ventilasyon: SpO2 hedefi ≥94%; hipoksi ve hipotansiyondan kaçın."},
-      {type:"action", text:"✅ Kan basıncını koru: Sistolik KB < 90 mmHg ise agresif sıvı ve kan ürünleri yönetimi; hipotansiyon beyin perfüzyonunu bozar."},
-      {type:"action", text:"✅ Hızlı görüntüleme: Stabil hastada non-contrast BT kafa; instabil hastada stabilizasyon öncelikli."},
-      {type:"action", text:"💊 KİBAS/Heriasyon şüphesinde: Nöroşirürji ile eş zamanlı iletişim; gerekirse mannitol 0.5-1 g/kg IV veya hipertonik salin (3%) uzman yönlendirmesiyle düşün."},
-      {type:"action", text:"✅ Antikoagülan/antiplatelet öyküsü varsa tersine çevirme planla ve hematom progresyonunu izle."},
-      {type:"step", text:"🔹 Transfer: Erken nöroşirürji/yoğun bakım koordinasyonu; cerrahi endikasyon varsa acil nakil."},
-      {type:"note", text:"🔹 Entübasyon ve ventilasyon sırasında aşırı hiperventilasyondan kaçın; sadece akut herniasyon durumunda kısa süreli kontrollü hiperventilasyon düşünülebilir."},
-      {type:"warning", text:"⚠️ Belgeleme: Olay mekanizması, bilinç kaybı süresi, nörolojik değişiklikler ve uygulanan müdahaleler ayrıntılı kaydedilmeli."}
-    ]},
+    ]}
   },
 
 
@@ -253,14 +249,19 @@ const algorithmData = {
       {type:"drug", text:"💊 Ek İlaçlar: Feniramin 1 mg/kg, Ranitidin 1 mg/kg ve Metilprednizolon 1-2 mg/kg IV."},
       {type:"warning", text:"🚨 DİKKAT: İM Adrenalin en güvenli ve hızlı yoldur. Antihistaminik adrenalin yerine geçmez!"}
     ]},
-    yanik: { category: "trauma", title: "🔥 Pediatrik Yanık (ÇİLYAD)", steps: [
-      {type:"action", text:"🔹 Yanmayı durdur, elbiseleri/takıları çıkar. Çeşme suyuyla 10-20 dk soğut (Buz kullanma)."},
-      {type:"step", text:"✅ Alan Hesabı: Modifiye Dokuzlar veya Avuç İçi kuralı (%1). 1. dereceyi sayma."},
-      {type:"drug", text:"💊 Sıvı (Parkland): 4 ml x kg x %Yanık (İlk yarısı 8 saatte). Tercihen Ringer Laktat."},
-      {type:"action", text:"✅ Yara Bakımı: Temiz, kuru örtüyle kapat. Kimyasal yanığı bol suyla yıka."},
-      {type:"warning", text:"⚠️ Hipotermi Riski: Çocuklarda vücut yüzeyi geniştir, soğutma sonrası hemen ört ve sıcak tut."},
-      {type:"note", text:"📝 İnhalasyon: Yüzde is, ses kısıklığı varsa erken entübasyon hazırlığı yap."}
-    ]}
+    yanik: { 
+      category: "trauma", 
+      title: "🔥 Pediatrik Yanık (ÇİLYAD)", 
+      image: "img/yanik_cocuk.jpg",
+      steps: [
+        {type:"action", text:"🔹 Yanmayı durdur, elbiseleri/takıları çıkar. Çeşme suyuyla 10-20 dk soğut (Buz kullanma)."},
+        {type:"step", text:"✅ Alan Hesabı: Modifiye Dokuzlar veya Avuç İçi kuralı (%1). 1. dereceyi sayma."},
+        {type:"drug", text:"💊 Sıvı (Parkland): 4 ml x kg x %Yanık (İlk yarısı 8 saatte). Tercihen Ringer Laktat."},
+        {type:"action", text:"✅ Yara Bakımı: Temiz, kuru örtüyle kapat. Kimyasal yanığı bol suyla yıka."},
+        {type:"warning", text:"⚠️ Hipotermi Riski: Çocuklarda vücut yüzeyi geniştir, soğutma sonrası hemen ört ve sıcak tut."},
+        {type:"note", text:"📝 İnhalasyon: Yüzde is, ses kısıklığı varsa erken entübasyon hazırlığı yap."}
+      ]
+    }
   }
 };
 
@@ -302,6 +303,13 @@ function showAlgo(key, grupName) {
       html += `<div class="${typeClass}">${step.type === 'decision' ? `<strong>${escapeHtml(step.title)}</strong><div>${escapeHtml(step.text)}</div>` : icon + escapeHtml(step.text)}</div>`;
     });
 
+    // --- GÖRSEL EKLEME MANTIĞI BURASI ---
+    if (algo.image) {
+      html += `<div class="algo-image" style="margin-top:20px; text-align:center;">
+                <img src="${algo.image}" alt="${algo.title}" style="max-width:100%; height:auto; border-radius:8px; border: 2px solid #ddd;">
+               </div>`;
+    }
+
     html += `</div>`;
     contentEl.innerHTML = html;
     contentEl.style.display = "block";
@@ -309,17 +317,86 @@ function showAlgo(key, grupName) {
   } catch (e) { console.error(e); }
 }
 
+function tahminiKiloHesapla() {
+  const tip = document.getElementById("yasTipi").value;
+  const deger = parseFloat(document.getElementById("yasDeger").value);
+  const kiloInput = document.getElementById("kiloInput");
+  
+  if (!deger || deger < 0) return;
+
+  let hesaplananKilo = 0;
+
+  if (tip === "ay") {
+    // < 1 Yaş Formülü: (Ay + 9) / 2
+    hesaplananKilo = (deger + 9) / 2;
+  } else {
+    // 1 - 5 Yaş: (Yaş × 2) + 8
+    // 6 - 12 Yaş: (Yaş × 3) + 7
+    if (deger >= 1 && deger <= 5) {
+      hesaplananKilo = (deger * 2) + 8;
+    } else if (deger > 5) {
+      hesaplananKilo = (deger * 3) + 7;
+    }
+  }
+
+  if (hesaplananKilo > 0) {
+    kiloInput.value = hesaplananKilo.toFixed(1);
+    hesaplaCocukDoz(); // Kiloyu bulduktan sonra dozları da güncelle
+  }
+}
+
 function hesaplaCocukDoz() {
-  const k = Number(document.getElementById("kiloInput").value);
-  const out = document.getElementById("dozSonuc");
-  if (!k || k <= 0) return;
-  out.innerHTML = `<div class="note-box">
-    <h3>💉 ${k} kg İçin Kritik Dozlar</h3>
-    <p><strong>Adrenalin (Arrest - 1:10.000):</strong> ${(0.01 * k).toFixed(2)} mg (${(0.1 * k).toFixed(1)} ml)</p>
-    <p><strong>Adrenalin (Anafilaksi - İM 1:1000):</strong> ${(0.01 * k).toFixed(2)} mg (Maks 0.3 mg)</p>
-    <p><strong>SF Bolus (20 ml/kg):</strong> ${(20 * k)} ml</p>
-    <p><strong>Midazolam (Nöbet - 0.1 mg/kg):</strong> ${(0.1 * k).toFixed(1)} mg IV</p>
-  </div>`;
+  const kg = parseFloat(document.getElementById("kiloInput").value);
+  const res = document.getElementById("dozSonuc");
+  if (!kg || kg <= 0) { res.innerHTML = ""; return; }
+
+  let h = `<div style="text-align:left; margin-top:15px; display:flex; flex-direction:column; gap:15px;">`;
+
+  // 1. Resüsitasyon (Arrest)
+  h += `<div class="decision-box">
+          <b class="decision-title">🚨 Resüsitasyon (Arrest)</b>
+          • <b>Adrenalin (1:10.000):</b> ${(kg * 0.1).toFixed(1)} ml IV/IO <small>(0.01 mg/kg)</small><br>
+          • <b>Amiodaron:</b> ${(kg * 5).toFixed(1)} mg <small>(5 mg/kg Bolus)</small><br>
+          • <b>Magnezyum Sülfat:</b> ${Math.min(kg * 50, 2000).toFixed(0)} mg <small>(25-50 mg/kg, Max 2g)</small>
+        </div>`;
+
+  // 2. Nöbet Kontrolü
+  h += `<div class="decision-box">
+          <b class="decision-title">🧠 Nöbet Kontrolü</b>
+          • <b>Midazolam (IV/IO):</b> ${(kg * 0.1).toFixed(2)} mg <small>(0.1 mg/kg)</small><br>
+          • <b>Midazolam (IM/Bukkal/Nazal):</b> ${(kg * 0.2).toFixed(2)} mg <small>(0.2 mg/kg)</small><br>
+          • <b>Diazepam (IV):</b> ${(kg * 0.2).toFixed(2)} mg | <b>Rektal:</b> ${(kg * 0.5).toFixed(2)} mg<br>
+          • <b>Fenitoin:</b> ${(kg * 20).toFixed(0)} mg <small>(SF içinde, 20 dk infüzyon)</small>
+        </div>`;
+
+  // 3. Solunum ve Anafilaksi
+  const salbutamol = kg < 20 ? "2.5 mg" : "5 mg";
+  const adrAnafilaksi = Math.min(kg * 0.01, 0.3).toFixed(2);
+  h += `<div class="decision-box">
+          <b class="decision-title">🫁 Solunum ve Anafilaksi</b>
+          • <b>Salbutamol Nebül:</b> ${salbutamol}<br>
+          • <b>Adrenalin IM (1:1000):</b> ${adrAnafilaksi} mg <small>(0.01 mg/kg, Max 0.3 mg)</small><br>
+          • <b>Metilprednizolon:</b> ${(kg * 1).toFixed(1)}-${(kg * 2).toFixed(1)} mg <small>(1-2 mg/kg)</small>
+        </div>`;
+
+  // 4. Şok ve Sıvı
+  h += `<div class="decision-box">
+          <b class="decision-title">💧 Sıvı ve Hipoglisemi</b>
+          • <b>İzotonik (Normal Şok):</b> ${(kg * 20).toFixed(0)} ml <small>(Hızlı bolus)</small><br>
+          • <b>İzotonik (Kardiyojenik):</b> ${(kg * 5).toFixed(0)}-${(kg * 10).toFixed(0)} ml <small>(Yavaş)</small><br>
+          • <b>%10 Dekstroz:</b> ${(kg * 5).toFixed(0)} ml <small>(Yeni Doğan için 2 ml/kg)</small>
+        </div>`;
+
+  // 5. Analjezi ve Sedasyon
+  h += `<div class="decision-box">
+          <b class="decision-title">💊 Analjezi ve Sedasyon</b>
+          • <b>Parasetamol:</b> ${(kg * 15).toFixed(0)} mg <small>(15 mg/kg)</small><br>
+          • <b>Fentanil:</b> ${(kg * 1).toFixed(1)} mcg <small>(1 mcg/kg)</small><br>
+          • <b>Ketamin:</b> ${(kg * 1).toFixed(1)}-${(kg * 2).toFixed(1)} mg <small>(1-2 mg/kg)</small>
+        </div>`;
+
+  h += `</div>`;
+  res.innerHTML = h;
 }
 
 function clearContent() {
@@ -329,15 +406,47 @@ function clearContent() {
 }
 
 function showGroup(g) {
-  document.getElementById("yetiskin").style.display = g === 'yetiskin' ? "block" : "none";
-  document.getElementById("cocuk").style.display = g === 'cocuk' ? "block" : "none";
+  // Tüm ana bölümleri gizle
+  document.getElementById("yetiskin").style.display = "none";
+  document.getElementById("cocuk").style.display = "none";
+  document.getElementById("cocukDozSection").style.display = "none";
+  document.getElementById("ilacTabloSection").style.display = "none"; // Yeni eklenen
+  
+  // Seçilen bölümü göster
+  if (g === 'yetiskin') {
+    document.getElementById("yetiskin").style.display = "block";
+  } else if (g === 'cocuk') {
+    document.getElementById("cocuk").style.display = "block";
+  } else if (g === 'doz') {
+    document.getElementById("cocukDozSection").style.display = "block";
+  } else if (g === 'ilaclar') {
+    document.getElementById("ilacTabloSection").style.display = "block";
+    renderIlacTablosu(); // Tabloyu oluştur
+  }
+  
   clearContent();
 }
 
-// CPR Sayacı Mantığı
+// --- CPR Sayacı ve Ses Mantığı ---
 let cprInterval = null;
 let cprRemaining = 120;
 
+const beepSound = new Audio('sound/beep.mp3');
+let metronomeInterval = null;
+
+// İnternet gerektirmeyen, cihazın ürettiği tık sesi fonksiyonu
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playTick() {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(800, audioCtx.currentTime); // Ses tonu
+  gain.gain.setValueAtTime(0.1, audioCtx.currentTime); // Ses seviyesi
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.05); // Çok kısa bir tık
+}
 function formatTime(s) {
   const mm = String(Math.floor(s / 60)).padStart(2, '0');
   const ss = String(s % 60).padStart(2, '0');
@@ -347,9 +456,18 @@ function formatTime(s) {
 function updateCPRDisplay() {
   const timerEl = document.getElementById("cprTimer");
   const alertEl = document.getElementById("cprAlert");
+  
   if (timerEl) timerEl.textContent = formatTime(cprRemaining);
+  
   if (cprRemaining <= 0 && alertEl) {
     alertEl.textContent = "🔔 2 dakika tamamlandı — ritim kontrolü ve ekip değişimi düşün.";
+    
+    beepSound.play().catch(e => console.log("Ses çalma hatası:", e));
+    
+    if (navigator.vibrate) {
+      try { navigator.vibrate([200, 100, 200]); } catch(e) {}
+    }
+    
     stopCPR();
   } else if (alertEl) {
     alertEl.textContent = "";
@@ -359,20 +477,36 @@ function updateCPRDisplay() {
 function startCPR() {
   if (cprInterval) return;
   if (cprRemaining <= 0) cprRemaining = 120;
+  
+  // Tarayıcının ses engellemesini kaldır
+  if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+
   updateCPRDisplay();
+
+  // 1. Geri Sayım Sayacı
   cprInterval = setInterval(() => {
     cprRemaining--;
     updateCPRDisplay();
   }, 1000);
+
+  // 2. Metronom (Dakikada 110 bası üretir)
+  metronomeInterval = setInterval(() => {
+    playTick();
+  }, 545); 
 }
 
 function stopCPR() {
+  // Sayacı durdur
   if (cprInterval) {
     clearInterval(cprInterval);
     cprInterval = null;
   }
+  // Metronomu (tık sesini) durdur
+  if (metronomeInterval) {
+    clearInterval(metronomeInterval);
+    metronomeInterval = null;
+  }
 }
-
 function resetCPR() {
   stopCPR();
   cprRemaining = 120;
@@ -382,3 +516,31 @@ function resetCPR() {
 document.addEventListener('DOMContentLoaded', () => {
   updateCPRDisplay();
 });
+
+function renderIlacTablosu() {
+  const ilaclar = [
+    {ad: "Amiodaron", form: "150mg/3ml<br>Doz: 300mg", not: "Sadece %5 Dekstroz ile. SF ile çöker! Arrestte 20ml %5D içinde puşe."},
+    {ad: "Adrenalin", form: "1mg/1ml<br>Doz: 1mg", not: "Arrestte doğrudan. Anafilakside SADECE İM (1:1000)."},
+    {ad: "Atropin", form: "0.5mg/1ml<br>Doz: 0.5-1mg", not: "Sulandırmadan doğrudan IV puşe."},
+    {ad: "Aritmal %2", form: "100mg/5ml<br>1-1.5 mg/kg", not: "Doğrudan puşe edilebilir."},
+    {ad: "Dopamin", form: "200mg/5ml", not: "500ml SF/%5D içine. İnfüzyonla verilir."},
+    {ad: "Dobütamin", form: "250mg/20ml", not: "250/500ml SF/%5D içine. İnfüzyonla."},
+    {ad: "Mag. Sülfat", form: "1.5g/10ml<br>Doz: 2g", not: "En az 100ml SF/%5D ile 15-20 dk'da. Puşe yapma (tansiyon düşürür)."},
+    {ad: "Kalsiyum", form: "%10 Ampul<br>5-10 ml", not: "Çok yavaş. Damar dışına çıkarsa doku nekrozu yapar!"},
+    {ad: "Beloc", form: "5mg/5ml<br>Doz: 5mg", not: "Sulandırmadan 2-5 dk'da çok yavaş. Nabız/TA takibi şart."},
+    {ad: "Adenozin", form: "6mg/2ml<br>Doz: 6-12mg", not: "ÇOK HIZLI puşe + 20ml SF hızlıca arkasından."},
+    {ad: "Diazepam", form: "10mg/2ml", not: "Sulandırılmaz. Plastik enjektörde bekletme. Yavaş IV."},
+    {ad: "Dormicum", form: "5/15 mg", not: "SF ile sulandırılabilir. Titre ederek (yavaş) verilir."}
+  ];
+
+  let html = "";
+  ilaclar.forEach((i, index) => {
+    const bg = index % 2 === 0 ? "#ffffff" : "#f8fafc";
+    html += `<tr style="background: ${bg}; border-bottom: 1px solid #eee;">
+      <td style="padding: 10px; font-weight: bold; color: var(--danger); border: 1px solid #eee;">${i.ad}</td>
+      <td style="padding: 10px; border: 1px solid #eee;">${i.form}</td>
+      <td style="padding: 10px; border: 1px solid #eee;">${i.not}</td>
+    </tr>`;
+  });
+  document.getElementById("ilacTabloGövde").innerHTML = html;
+}

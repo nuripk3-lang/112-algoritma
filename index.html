@@ -24,6 +24,8 @@
 <div class="grid">
   <button data-key="yetiskin" onclick="showGroup('yetiskin')" aria-controls="yetiskin" aria-pressed="false">🧑 Yetişkin</button>
   <button data-key="cocuk" onclick="showGroup('cocuk')" aria-controls="cocuk" aria-pressed="false">👶 Çocuk</button>
+  <button data-key="doz" onclick="showGroup('doz')" aria-controls="cocukDozSection" aria-pressed="false">💉 Çocuk Doz</button>
+  <button data-key="ilaclar" onclick="showGroup('ilaclar')" aria-controls="ilacTabloSection" aria-pressed="false">💊 İlaçlar</button>
 </div>
 
 <!-- YETİŞKİN -->
@@ -74,16 +76,49 @@
   </div>
 
   <!-- ÇOCUK DOZ -->
-  <h2>👶 Çocuk Doz Hesaplama</h2>
-  <label for="kiloInput" class="visually-hidden">Kilo</label>
-  <input type="number" id="kiloInput" placeholder="Kilo (kg)" oninput="hesaplaCocukDoz()" aria-label="Kilo (kg)">
-  <div id="dozSonuc" aria-live="polite"></div>
+  </div> <div id="cocukDozSection" class="section" style="display:none;">
+  <div style="background:#fff; padding:20px; border-radius:20px; box-shadow:var(--card-shadow);">
+    <h2 style="text-align:center;">👶 Çocuk Doz Hesaplama</h2>
+    <p class="info">Çocuğun kilosunu girerek kritik ilaç dozlarını anlık hesaplayın.</p>
+    <label for="kiloInput" class="visually-hidden">Kilo</label>
+    <div style="margin-bottom:15px; background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #e2e8f0;">
+  <label style="display:block; font-weight:bold; margin-bottom:8px; font-size:14px;">📏 Yaşa Göre Kilo Tahmin Et (Opsiyonel)</label>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+    <select id="yasTipi" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+      <option value="ay">Ay (0-12)</option>
+      <option value="yil" selected>Yaş (1-12)</option>
+    </select>
+    <input type="number" id="yasDeger" placeholder="Değer gir..." oninput="tahminiKiloHesapla()" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+  </div>
+</div>
+
+<label style="display:block; font-weight:bold; margin-bottom:8px; font-size:14px;">⚖️ Kesin Kilo (kg)</label>
+<input type="number" id="kiloInput" placeholder="Kilo (kg) giriniz..." oninput="hesaplaCocukDoz()" aria-label="Kilo (kg)" style="width:100%; padding:14px; border-radius:12px; border:1px solid #ddd; font-size:18px; background:#fff7ed;">
+    <div id="dozSonuc" aria-live="polite" style="margin-top:20px;"></div>
+  </div>
 </div>
 
 <div id="content" aria-live="polite" style="display:none;"></div>
 
 <!-- CPR -->
-<div id="cprBox">
+<div id="ilacTabloSection" class="section" style="display:none;">
+    <div style="background:#fff; padding:15px; border-radius:20px; box-shadow:var(--card-shadow); overflow-x: auto; margin-bottom: 20px;">
+      <h2 style="text-align:center;">💉 Acil İlaç Hazırlama</h2>
+      <table style="width:100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+        <thead>
+          <tr style="background: var(--primary-1); color: white;">
+            <th style="padding: 10px; border: 1px solid #ddd;">İlaç Adı</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Form / Doz</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Hazırlanış / Notlar</th>
+          </tr>
+        </thead>
+        <tbody id="ilacTabloGövde">
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="cprBox">
   <h2>🫀 CPR Sayacı</h2>
   <div id="cprTimer" role="timer" aria-live="polite">02:00</div>
   <div class="cpr-controls">
@@ -92,6 +127,7 @@
     <button onclick="resetCPR()">🔁 Sıfırla</button>
   </div>
   <p id="cprAlert" aria-live="assertive"></p>
+
 </div>
 
 <script src="app.js" defer></script>
