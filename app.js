@@ -473,14 +473,27 @@ function updateCPRDisplay() {
   
   if (timerEl) timerEl.textContent = formatTime(cprRemaining);
   
-  if (cprRemaining <= 0 && alertEl) {
-    alertEl.textContent = "🔔 2 dakika tamamlandı — ritim kontrolü ve ekip değişimi düşün.";
-    
+  // Süre dolduğunda (00:00)
+  if (cprRemaining <= 0) {
+    // 1. Önce metronomu sustur (Tık sesleri anında kesilir)
+    stopCPR();
+
+    // 2. Şimdi senin beep.mp3 sesini çal
     beepSound.play().catch(e => console.log("Ses çalma hatası:", e));
+
+    // 3. Ekrana mesajı yaz
+    if (alertEl) {
+      alertEl.textContent = "🔔 2 dakika tamamlandı — ritim kontrolü ve ekip değişimi düşün.";
+    }
     
+    // 4. Titreşimi çalıştır
     if (navigator.vibrate) {
       try { navigator.vibrate([200, 100, 200]); } catch(e) {}
     }
+  } else if (alertEl) {
+    alertEl.textContent = "";
+  }
+}
     
     stopCPR();
   } else if (alertEl) {
@@ -492,15 +505,12 @@ function startCPR() {
   if (cprInterval) return;
   if (cprRemaining <= 0) cprRemaining = 120;
   
-  // Mobil ses kilidini aç
+  // Ses motorunu uyandır (Tık sesleri için)
   if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
   if (audioCtx.state === 'suspended') { audioCtx.resume(); }
 
-  // beepSound kilidini aç
-  beepSound.play().then(() => {
-    beepSound.pause();
-    beepSound.currentTime = 0;
-  }).catch(() => {});
+  // ÖNEMLİ: Burada beepSound.play() vardı, onu sildik. 
+  // Artık başlata basınca senin sesin çalmayacak.
 
   updateCPRDisplay();
 
