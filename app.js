@@ -427,19 +427,17 @@ function showGroup(g) {
   clearContent();
 }
 
-// --- CPR Sayacı ve Ses Mantığı ---
+// --- CPR Sayacı ve Ses Mantığı (TAMİR EDİLDİ) ---
 let cprInterval = null;
 let cprRemaining = 120;
-
-const beepSound = new Audio('sound/beep.mp3');
 let metronomeInterval = null;
+const beepSound = new Audio('sound/beep.mp3');
 
-// İnternet gerektirmeyen, cihazın ürettiği tık sesi fonksiyonu
 // Ses sistemini (AudioContext) bir değişkende tutalım
 let audioCtx = null;
 
 function playTick() {
-  // Eğer başlatılmamışsa veya kapalıysa oluştur (Mobil uyum için)
+  // Eğer başlatılmamışsa oluştur (Mobil uyum için)
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
@@ -452,15 +450,15 @@ function playTick() {
   gain.connect(audioCtx.destination);
   
   osc.type = 'sine';
-  osc.frequency.setValueAtTime(1000, audioCtx.currentTime); // 1000Hz daha net bir tık
+  osc.frequency.setValueAtTime(1000, audioCtx.currentTime); // 1000Hz net tık sesi
   
-  // Sesi hızlıca başlatıp bitirerek tık efekti veriyoruz
   gain.gain.setValueAtTime(0.15, audioCtx.currentTime); 
   gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
   
   osc.start(audioCtx.currentTime);
   osc.stop(audioCtx.currentTime + 0.05);
 }
+
 function formatTime(s) {
   const mm = String(Math.floor(s / 60)).padStart(2, '0');
   const ss = String(s % 60).padStart(2, '0');
@@ -475,10 +473,10 @@ function updateCPRDisplay() {
   
   // Süre dolduğunda (00:00)
   if (cprRemaining <= 0) {
-    // 1. Önce metronomu sustur (Tık sesleri anında kesilir)
+    // 1. Metronomu sustur
     stopCPR();
 
-    // 2. Şimdi senin beep.mp3 sesini çal
+    // 2. Uyarı sesini çal
     beepSound.play().catch(e => console.log("Ses çalma hatası:", e));
 
     // 3. Ekrana mesajı yaz
@@ -490,14 +488,9 @@ function updateCPRDisplay() {
     if (navigator.vibrate) {
       try { navigator.vibrate([200, 100, 200]); } catch(e) {}
     }
-  } else if (alertEl) {
-    alertEl.textContent = "";
-  }
-}
-    
-    stopCPR();
-  } else if (alertEl) {
-    alertEl.textContent = "";
+  } else {
+    // Süre dolmadıysa uyarı yazısını temizle
+    if (alertEl) alertEl.textContent = "";
   }
 }
 
@@ -505,12 +498,9 @@ function startCPR() {
   if (cprInterval) return;
   if (cprRemaining <= 0) cprRemaining = 120;
   
-  // Ses motorunu uyandır (Tık sesleri için)
+  // Ses motorunu uyandır
   if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
   if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-
-  // ÖNEMLİ: Burada beepSound.play() vardı, onu sildik. 
-  // Artık başlata basınca senin sesin çalmayacak.
 
   updateCPRDisplay();
 
@@ -535,18 +525,18 @@ function stopCPR() {
     clearInterval(metronomeInterval);
     metronomeInterval = null;
   }
-  // AudioContext'i kapatmıyoruz, sadece ses üreten interval'ı durduruyoruz.
 }
+
 function resetCPR() {
   stopCPR();
   cprRemaining = 120;
   updateCPRDisplay();
 }
 
+// Sayfa yüklendiğinde CPR ekranını hazırla
 document.addEventListener('DOMContentLoaded', () => {
   updateCPRDisplay();
 });
-
 function renderIlacTablosu() {
   const ilaclar = [
     {ad: "Amiodaron", form: "150mg/3ml<br>Doz: 300mg", not: "Sadece %5 Dekstroz ile. SF ile çöker! Arrestte 20ml %5D içinde puşe."},
