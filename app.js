@@ -130,16 +130,22 @@ const algorithmData = {
         {type:"drug", text:"Ağrı kontrolü: Morfin 0.1 mg/kg veya Fentanil 1-2 mcg/kg IV."}
       ]
     },
-    zehir: { category: "toxicology", title: "🧪 Zehirlenme ve Madde İntoksikasyonu", steps: [
-      {type:"warning", text:"⚠️ Güvenlik: Kontaminasyon varsa KKE giy ve hastayı yıka. KŞ ölç!"},
-      {type:"step", text:"🔹 Opioid: Solunum baskılanmış ve miyozis varsa Nalokson (Yet: 0.4-2mg, Çoc: 0.01mg/kg) uygula."},
-      {type:"step", text:"🔹 Organofosfat: Sekresyonlar kuruyana dek Atropin (Yet: 1-3mg, Çoc: 0.05mg/kg) tekrarla."},
-      {type:"step", text:"🔹 Alkol: Wernicke riskine karşı glukozdan önce Tiamin 100mg ver. Ajitasyonda Diazepam düşün."},
-      {type:"drug", text:"💊 Uyarıcı: Ajitasyon ve hipertansiyon için Diazepam kullan; Kokainde Beta-Blokör KULLANMA."},
-      {type:"action", text:"✅ Hedef: ABCDE stabilizasyonu ve spesifik antidot ile sekresyon/solunum kontrolü."},
-      {type:"action", text:"✅ UZEMİ ARA 114 "}
-    
-    ]},
+ zehir: { 
+      category: "toxicology", 
+      title: "🧪 Zehirlenme ve Madde İntoksikasyonu", 
+      steps: [
+        {type:"warning", text:"⚠️ Güvenlik: Kontaminasyon varsa KKE giy ve hastayı yıka. KŞ ölç!"},
+        {type:"step", text:"🔹 Opioid: Solunum baskılanmış ve miyozis varsa Nalokson (Yet: 0.4-2mg, Çoc: 0.01mg/kg) uygula."},
+        {type:"step", text:"🔹 Organofosfat: Sekresyonlar kuruyana dek Atropin (Yet: 1-3mg, Çoc: 0.05mg/kg) tekrarla."},
+        {type:"step", text:"🔹 Aktif Kömür: İlk 1 saat içinde gelen vakalarda (korozif madde ve hidrokarbon değilse) 1 gr/kg dozunda uygulanabilir.."},
+        {type:"drug", text:"💊 Uyarıcı: Ajitasyon ve hipertansiyon için Diazepam kullan; Kokainde Beta-Blokör KULLANMA."},
+        {type:"action", text:"✅ Hedef: ABCDE stabilizasyonu ve spesifik antidot ile sekresyon/solunum kontrolü."},
+        {type:"action", text:"✅ UZEMİ ARA 114"},
+        {type:"note", text: "🧪 SPESİFİK ANTİDOTLAR TABLOSU"},
+        {type:"table", text: `<div style="overflow-x:auto;"><table style="width:100%; border-collapse: collapse; font-size: 12px; background: white; color: black;"><tr style="background: #1e293b; color: white;"><th style="padding: 6px; border: 1px solid #ddd;">Zehirlenme</th><th style="padding: 6px; border: 1px solid #ddd;">Antidot</th><th style="padding: 6px; border: 1px solid #ddd;">Not</th></tr><tr><td>Opioid</td><td>Nalokson</td><td>Solunum düzelene dek 2-3 dk bir.</td></tr><tr style="background:#f8fafc;"><td>Benzo</td><td>Flumazenil</td><td>Nöbet öyküsünde KONTRENDİKE!</td></tr><tr><td>Parasetamol</td><td>NAC</td><td>İlk 8 saat en etkili zaman.</td></tr><tr style="background:#f8fafc;"><td>Tarım İlacı</td><td>Atropin</td><td>Sekresyon kuruyana kadar 1-3mg.</td></tr><tr><td>Beta-Blokör</td><td>Glukagon</td><td>3-10mg IV yavaş.</td></tr><tr style="background:#f8fafc;"><td>Kalsiyum BK</td><td>Kalsiyum</td><td>%10 Kalsiyum Glukonat 10-20ml IV.</td></tr><tr><td>Metil Alkol</td><td>Etil Alkol</td><td>%10 Etil Alkol veya saf alkol.</td></tr><tr style="background:#f8fafc;"><td>Karbonmonoksit</td><td>%100 O2</td><td>Hiperbarik O2 gerekebilir.</td></tr><tr><td>Siyanür</td><td>Cyanokit</td><td>5g IV infüzyon uygulanır.</td></tr><tr style="background:#f8fafc;"><td>Demir</td><td>Deferoksamin</td><td>İdrarın pembeleşmesi etkinliktir.</td></tr></table></div>`}
+      ]
+    },
+
     nobet: { category: "neuro", title: "🧠 Nöbet / Status Epilepticus", steps: [
       {type:"step", text:"🔹 Güvenli çevre ve ABCDE değerlendirmesi yap: Hastanın çevresindeki tehlikeli eşyaları uzaklaştır, havayolu açıklığını sağla."},
       {type:"action", text:"✅ Travmadan koru, yan yatır, oksijen ver: Hastayı nazikçe yere yatır (mümkünse sol yan / recovery pozisyonu), başını koru, yüksek akımlı oksijen başlat."},
@@ -165,6 +171,51 @@ const algorithmData = {
       {type:"warning", text:"⚠️ Mavi Yanıt (Beta-bloker kullananlar): Beta bloker kullanan hastalarda adrenalin etkisiz kalabilir; bu durumda Glukagon 1-5 mg IV düşünülebilir."},
       {type:"note", text:"Gözlem Süresi: Başarılı müdahaleden sonra bile bifazik reaksiyon riski nedeniyle en az 4-12 saat hastanede gözlem önerilir." }
     ]},
+
+dogum: { category: "obstetric", title: "🤰 Acil Doğum ve Komplikasyonlar", steps: [
+      {type:"step", text:"🔹 **Hazırlık:** Steril eldiven, kordon klempleri, makas ve bebeği kurulamak için sıcak battaniye hazırla."},
+      {type:"action", text:"✅ **Doğum:** Bebek başı göründüğünde nazikçe destekle; baş çıktıktan sonra omuzların kurtulmasına yardım et."},
+      {type:"step", text:"🔹 **Kordon:** Bebek doğunca anne seviyesinde tut; kordon nabzı durunca (1-3 dk) klemple ve kes."},
+      {type:"warning", text:"⚠️ **Plasenta:** Kendiliğinden ayrılmasını bekle (5-20 dk); plasentayı veya kordonu ASLA zorla çekme."},
+      {type:"action", text:"✅ **Bebek Bakımı:** Bebeği hemen kurula, ağız/burnu (gerekirse) aspire et, anne ile ten teması sağla."},
+      {type:"note", text: "--- POSTPARTUM HEMORAJİ (DOĞUM SONU KANAMA) ---"},
+      {type:"action", text:"✅ **Fundus Masajı:** Rahmi dışarıdan sertçe ovuşturarak kasılmasını sağla (en önemli adım)."},
+      {type:"step", text:"🔹 **Pozisyon:** Hastayı düz yatır, bacakları yükselt, yüksek akım oksijen başla."},
+      {type:"drug", text:"💉 **Damar Yolu:** En az iki adet geniş çaplı (14-16 G) IV hat aç ve hızlı SF başla."},
+      {type:"note", text: "--- GEBELİKTE KARDİYAK ARREST ---"},
+      {type:"action", text:"✅ **LUD Manevrası:** Uterusu manuel olarak sola it (Left Uterine Displacement); resüsitasyon başarısı için şarttır."},
+      {type:"step", text:"🔹 **KPR:** Göğüs basısı yerini uterus basısı nedeniyle normalden 1-2 parmak yukarıda tutabilirsin."}
+    ]},
+inme: { category: "neurologic", title: "🧠 İnme (Serebrovasküler Olay - SVH)", steps: [
+      {type:"note", text: "HIZLI DEĞERLENDİRME VE TANI (FAST SKALASI)"},
+      {type:"step", text:"🔹 **F (Face - Yüz):** Hastaya gülümsemesini söyle; yüzünde asimetri veya bir tarafta sarkma var mı?"},
+      {type:"step", text:"🔹 **A (Arms - Kollar):** Her iki kolunu havaya kaldırmasını iste; bir kol aşağı düşüyor mu?"},
+      {type:"step", text:"🔹 **S (Speech - Konuşma):** Basit bir cümle kurmasını iste; konuşması peltek veya anlamsız mı?"},
+      {type:"step", text:"🔹 **T (Time - Zaman):** Semptomların başladığı tam saati (son normal görüldüğü an) belirle."},
+      {type:"note", text: "ACİL MÜDAHALE VE STABİLİZASYON"},
+      {type:"action", text:"✅ **ABCDE ve Oksijen:** Havayolunu koru; SpO2 <%94 ise oksijen başla."},
+      {type:"action", text:"✅ **Kan Şekeri Ölçümü:** Mutlaka KŞ ölç! Hipoglisemi, inme bulgularını taklit edebilir."},
+      {type:"step", text:"🔹 **Pozisyon:** Baş 30 derece yukarıda olacak şekilde yatır (KİBAS riskini azaltmak için)."},
+      {type:"drug", text:"💉 **Damar Yolu:** En az bir adet geniş çaplı IV hat aç; hipotansiyon yoksa aşırı sıvı yüklemesinden kaçın."},
+      {type:"warning", text:"⚠️ **Tansiyon Yönetimi:** Trombolitik (pıhtı eritici) verilecekse hedef KB <185/110 mmHg; verilmeyecekse 220/120 mmHg üzerine kadar müdahale etme."},
+      {type:"warning", text:"💊 **Antiplatelet:** BT ile kanama dışlanmadan kesinlikle Aspirin veya Kan Sulandırıcı VERME!"}
+    ]},
+
+hipoglisemi: { category: "metabolic", title: "🩸 Hipoglisemi (Yetişkin)", steps: [
+      {type:"note", text: "TANI VE BELİRTİLER"},
+      {type:"warning", text:"⚠️ **Eşik Değer:** Kan şekerinin <60 mg/dL olması."},
+      {type:"step", text:"🔹 **Belirtiler:** Terleme, titreme, çarpıntı, hızlı solunum, konfüzyon veya saldırganlık."},
+      {type:"action", text:"✅ **Ölçüm:** Bilinç değişikliği sergileyen her hastada mutlaka kan şekeri ölçülmelidir."},
+      {type:"note", text: "BİLİNÇ AÇIK / YUTMA REFLEKSİ VAR"},
+      {type:"action", text:"✅ **15/15 Kuralı:** 15-20 gram hızlı etkili karbonhidrat (3-4 adet kesme şeker veya 150 ml meyve suyu) verilir."},
+      {type:"step", text:"🔹 **Takip:** 15 dakika sonra şeker tekrar ölçülür; değer hala <70 ise işlem tekrarlanır."},
+      {type:"step", text:"📝 **Öğün:** Şeker düzelince, tekrar düşüşü önlemek için kompleks karbonhidrat (sandviç vb.) yedirilir."},
+      {type:"note", text: "BİLİNÇ KAPALI / YUTMA REFLEKSİ YOK"},
+      {type:"drug", text:"💉 **Damar Yolu:** Vakit kaybetmeden geniş bir IV hat açılır."},
+      {type:"drug", text:"💊 **Dekstroz:** %20 Dekstroz 100 ml IV veya %50 Dekstroz 50 ml IV (Yavaş puşe)."}
+   
+    ]},
+
     travma: { category: "trauma", title: "🚑 Travmalı Hasta", steps: [
       {type:"action", text:"Olay yeri güvenliği, immobilizasyon, ABCDE, kanama kontrolü yap."},
       {type:"step", text:"Şok bulgusu varsa hızlı sıvı desteği ve uygun merkeze öncelikli nakil."},
@@ -208,6 +259,34 @@ const algorithmData = {
       {type:"drug", text:"💊 Amiodaron: VF/nVT devam ediyorsa 3. ve 5. şok sonrası 5 mg/kg IV/IO."},
       {type:"note", text:"📝 6H - 5T: Çocuklarda özellikle Hipoglisemi ve Hipoksi nedenlerini hemen tara."}
     ]},
+
+p_hipoglisemi: { category: "pediatric_metabolic", title: "👶 Pediatrik Hipoglisemi (ÇİLYAD)", steps: [
+      {type:"warning", text:"⚠️ **Eşik Değer:** Bebek ve çocuklarda Kan Şekeri <60 mg/dL ise müdahale edilir."},
+      {type:"step", text:"🔹 **Belirtiler:** Huzursuzluk, uyuklama, beslenme güçlüğü, apne (nefes durması) veya nöbet."},
+      {type:"action", text:"✅ **Öncelik:** Havayolu (ABC) güvenliğini sağla ve vakit kaybetmeden IV/IO hattı aç."},
+      {type:"note", text: "DEKSTROZ UYGULAMASI (%10'LUK TERCİH EDİLİR)"},
+      {type:"drug", text:"🍼 **Yeni Doğan:** %10 Dekstroz 2 ml/kg IV/IO (Yavaş puşe)."},
+      {type:"drug", text:"👶 **Bebek ve Çocuk:** %10 Dekstroz 5 ml/kg IV/IO (Maksimum tek doz 250 ml)."},
+      {type:"warning", text:"⚠️ **Konsantrasyon:** Çocuklarda damar sağlığı için %25 veya %50'lik dekstrozun seyreltilmeden verilmesi önerilmez (Doku nekrozu riski!)."},
+      {type:"step", text:"🔹 **Takip:** 15-20 dakika sonra KŞ tekrar ölçülür; düzelme yoksa doz tekrarlanır."},
+      {type:"action", text:"✅ **İdame:** Şeker yükselince tekrar düşüşü önlemek için %5-10 Dekstroz içeren infüzyon başlanmalıdır."}
+    ]},
+
+nrp: { category: "neonatal", title: "👶 Yenidoğan Resüsitasyonu (NRP)", steps: [
+      {type:"note", text: "İLK 30 SANİYE: BAŞLANGIÇ ADIMLARI"},
+      {type:"warning", text:"⚠️ **Hızlı Sorgulama:** Bebek miadında mı? Tonusu iyi mi? Ağlıyor mu? (Hayır ise başla)."},
+      {type:"action", text:"✅ **Isıt ve Kurula:** Radyan ısıtıcı altında kurula, ıslak örtüleri at, taktil uyaran ver."},
+      {type:"step", text:"🔹 **Pozisyon:** Başı 'Koklama Pozisyonuna' getir. Gerekirse ağız ve burnu aspire et."},
+      {type:"note", text: "POZİTİF BASINÇLI VENTİLASYON (PBV)"},
+      {type:"action", text:"✅ **PBV:** KAH <100 veya apne/gasping varsa balon-maske ile PBV (40-60 soluk/dk) başla."},
+      {type:"step", text:"🔹 **MR. SOPA:** Göğüs kalkmıyorsa; Maske, Repozisyon, Aspirasyon, Ağız açma kontrol et."},
+      {type:"warning", text:"⚠️ **Göğüs Basısı:** 30 sn etkin PBV'ye rağmen KAH <60 ise göğüs basısına geç!"},
+      {type:"note", text: "KPR VE İLAÇLAR"},
+      {type:"action", text:"✅ **KPR Oranı (3:1):** 90 bası, 30 soluk; dakikada toplam 120 olay gerçekleşmeli."},
+      {type:"drug", text:"💊 **Adrenalin:** Etkin PBV/KPR'ye rağmen KAH <60 ise: 0.01-0.03 mg/kg (1:10.000'lik) IV/IO."},
+      {type:"drug", text:"💧 **Sıvı:** Kan kaybı/Şok şüphesinde 10 ml/kg İzotonik SF (5-10 dk içinde)."}
+    ]},
+
     hipovolemi: { category: "shock", title: "💧 Pediatrik Hipovolemik Şok (ÇİLYAD)", steps: [
       {type:"step", text:"🔹 ABCDE & Klinik: Bilinç, kapiller dolum (>2 sn), nabız kalitesi ve idrar çıkışını kontrol et."},
       {type:"action", text:"✅ Sıvı Bolusu: 20 ml/kg İzotonik kristaloid (SF veya RL) 5-20 dk içinde hızlıca ver."},
@@ -288,9 +367,24 @@ function showAlgo(key, grupName) {
     const contentEl = document.getElementById("content");
     if (!contentEl || !algo) return;
 
-    let html = `<button class="back-btn" onclick="clearContent()">⬅️ Geri Dön</button>
-                <h2 style="color:#b91c1c; margin-bottom:12px;">${escapeHtml(algo.title)}</h2>
-                <div class="algo-container">`;
+   let html = `<button class="back-btn" onclick="clearContent()">⬅️ Geri Dön</button>
+                <h2 style="color:#b91c1c; margin-bottom:12px;">${escapeHtml(algo.title)}</h2>`;
+
+   // Ses Paneli (Astım veya KOAH için)
+    const currentKey = key.toLowerCase().trim();
+    if (currentKey === 'astim' || currentKey === 'koah') {
+        const sesBaslik = currentKey === 'astim' ? "Wheezing (Hırıltı)" : "Ronküs (Kaba Ses)";
+        html += `
+        <div style="margin-bottom:15px; background:#fef2f2; padding:15px; border-radius:12px; border:2px solid #fecaca; text-align:center;">
+            <p style="margin:0 0 10px 0; font-size:15px; font-weight:bold; color:#b91c1c;">🫁 Oskültasyon: ${sesBaslik}</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="back-btn" style="background:#ef4444; width:auto; padding:10px 20px; color:white; margin:0; border:none;" onclick="playSound('${currentKey}')">🔊 Dinle</button>
+                <button class="back-btn" style="background:#64748b; width:auto; padding:10px 20px; color:white; margin:0; border:none;" onclick="stopAllSounds()">⏹️ Durdur</button>
+            </div>
+        </div>`;
+    }
+
+    html += `<div class="algo-container">`;
 
     algo.steps.forEach(step => {
       const typeClass = step.type + "-box";
@@ -300,10 +394,17 @@ function showAlgo(key, grupName) {
       else if(step.type === 'action') icon = '✅ ';
       else if(step.type === 'note') icon = '📝 ';
       
-      html += `<div class="${typeClass}">${step.type === 'decision' ? `<strong>${escapeHtml(step.title)}</strong><div>${escapeHtml(step.text)}</div>` : icon + escapeHtml(step.text)}</div>`;
+      // --- DÜZELTİLEN KISIM BURASI ---
+      if (step.type === 'table') {
+        html += `<div class="${typeClass}" style="background:transparent; border:none; padding:0;">${step.text}</div>`;
+      } else if (step.type === 'decision') {
+        html += `<div class="${typeClass}"><strong>${escapeHtml(step.title)}</strong><div>${escapeHtml(step.text)}</div></div>`;
+      } else {
+        html += `<div class="${typeClass}">${icon + escapeHtml(step.text)}</div>`;
+      }
+      // -------------------------------
     });
 
-    // --- GÖRSEL EKLEME MANTIĞI BURASI ---
     if (algo.image) {
       html += `<div class="algo-image" style="margin-top:20px; text-align:center;">
                 <img src="${algo.image}" alt="${algo.title}" style="max-width:100%; height:auto; border-radius:8px; border: 2px solid #ddd;">
@@ -316,7 +417,6 @@ function showAlgo(key, grupName) {
     contentEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (e) { console.error(e); }
 }
-
 function tahminiKiloHesapla() {
   const tip = document.getElementById("yasTipi").value;
   const deger = parseFloat(document.getElementById("yasDeger").value);
@@ -400,6 +500,7 @@ function hesaplaCocukDoz() {
 }
 
 function clearContent() {
+  stopAllSounds(); // Ses çalarken geri çıkılırsa sesi susturur
   const c = document.getElementById("content");
   if (c) { c.style.display = "none"; c.innerHTML = ''; }
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -563,4 +664,19 @@ function renderIlacTablosu() {
     </tr>`;
   });
   document.getElementById("ilacTabloGövde").innerHTML = html;
+}
+
+// --- AKCİĞER SESLERİ SİSTEMİ ---
+const wheezingSound = new Audio('sound/wheezing.mp3');
+const ronkusSound = new Audio('sound/ronküs.MP3'); // Senin kaydettiğin dosya adı
+
+function playSound(type) {
+    stopAllSounds(); // Önce çalan varsa durdur
+    if(type === 'astim') wheezingSound.play().catch(e => console.log("Astım sesi hatası:", e));
+    if(type === 'koah') ronkusSound.play().catch(e => console.log("KOAH sesi hatası:", e));
+}
+
+function stopAllSounds() {
+    wheezingSound.pause(); wheezingSound.currentTime = 0;
+    ronkusSound.pause(); ronkusSound.currentTime = 0;
 }
