@@ -435,17 +435,31 @@ const beepSound = new Audio('sound/beep.mp3');
 let metronomeInterval = null;
 
 // İnternet gerektirmeyen, cihazın ürettiği tık sesi fonksiyonu
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+// Ses sistemini (AudioContext) bir değişkende tutalım
+let audioCtx = null;
+
 function playTick() {
+  // Eğer başlatılmamışsa veya kapalıysa oluştur (Mobil uyum için)
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
+  
   osc.connect(gain);
   gain.connect(audioCtx.destination);
+  
   osc.type = 'sine';
-  osc.frequency.setValueAtTime(800, audioCtx.currentTime); // Ses tonu
-  gain.gain.setValueAtTime(0.1, audioCtx.currentTime); // Ses seviyesi
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.05); // Çok kısa bir tık
+  osc.frequency.setValueAtTime(1000, audioCtx.currentTime); // 1000Hz daha net bir tık
+  
+  // Sesi hızlıca başlatıp bitirerek tık efekti veriyoruz
+  gain.gain.setValueAtTime(0.15, audioCtx.currentTime); 
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+  
+  osc.start(audioCtx.currentTime);
+  osc.stop(audioCtx.currentTime + 0.05);
 }
 function formatTime(s) {
   const mm = String(Math.floor(s / 60)).padStart(2, '0');
@@ -478,38 +492,40 @@ function startCPR() {
   if (cprInterval) return;
   if (cprRemaining <= 0) cprRemaining = 120;
   
-  // MOBİL İÇİN KRİTİK DOKUNUŞ: 
-  // Kullanıcı butona bastığı an sesi sessizce "oynat-duraklat" yaparak kilidi açıyoruz.
-  beepSound.play().then(() => {
-      beepSound.pause();
-      beepSound.currentTime = 0;
-  }).catch(e => console.log("Ses uyandırılamadı"));
-
+  // Mobil ses kilidini aç
+  if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
   if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+
+  // beepSound kilidini aç
+  beepSound.play().then(() => {
+    beepSound.pause();
+    beepSound.currentTime = 0;
+  }).catch(() => {});
 
   updateCPRDisplay();
 
+  // 1. Saniye Sayacı
   cprInterval = setInterval(() => {
     cprRemaining--;
     updateCPRDisplay();
   }, 1000);
 
+  // 2. Metronom (Dakikada 110 Tık)
   metronomeInterval = setInterval(() => {
     playTick();
   }, 545); 
 }
 
 function stopCPR() {
-  // Sayacı durdur
   if (cprInterval) {
     clearInterval(cprInterval);
     cprInterval = null;
   }
-  // Metronomu (tık sesini) durdur
   if (metronomeInterval) {
     clearInterval(metronomeInterval);
     metronomeInterval = null;
   }
+  // AudioContext'i kapatmıyoruz, sadece ses üreten interval'ı durduruyoruz.
 }
 function resetCPR() {
   stopCPR();
