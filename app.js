@@ -533,6 +533,7 @@ let cprInterval = null;
 let cprRemaining = 120;
 let metronomeInterval = null;
 const beepSound = new Audio('sound/beep.mp3');
+beepSound.load(); // Dosyayı önceden belleğe al
 
 // Ses sistemini (AudioContext) bir değişkende tutalım
 let audioCtx = null;
@@ -578,8 +579,9 @@ function updateCPRDisplay() {
     stopCPR();
 
     // 2. Uyarı sesini çal
-    beepSound.play().catch(e => console.log("Ses çalma hatası:", e));
-
+   // 2. Uyarı sesini çal (Sıfırlayarak oynat)
+    beepSound.currentTime = 0;
+    beepSound.play().catch(e => console.log("Süre sonu sesi başarısız:", e));
     // 3. Ekrana mesajı yaz
     if (alertEl) {
       alertEl.textContent = "🔔 2 dakika tamamlandı — ritim kontrolü ve ekip değişimi düşün.";
@@ -599,9 +601,17 @@ function startCPR() {
   if (cprInterval) return;
   if (cprRemaining <= 0) cprRemaining = 120;
   
-  // Ses motorunu uyandır
-  if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  // SES MOTORUNU VE DOSYAYI UYANDIR (Mobil Tarayıcılar İçin)
+  if (!audioCtx) { 
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+  }
   if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+
+  // Telefon kilidini açmak için beep sesini milisaniyelik oynat-durdur yapıyoruz
+  beepSound.play().then(() => {
+      beepSound.pause();
+      beepSound.currentTime = 0;
+  }).catch(e => console.log("Mobil ses uyandırma pas geçildi veya hata:", e));
 
   updateCPRDisplay();
 
@@ -616,7 +626,6 @@ function startCPR() {
     playTick();
   }, 545); 
 }
-
 function stopCPR() {
   if (cprInterval) {
     clearInterval(cprInterval);
