@@ -370,13 +370,18 @@ function showAlgo(key, grupName) {
    let html = `<button class="back-btn" onclick="clearContent()">⬅️ Geri Dön</button>
                 <h2 style="color:#b91c1c; margin-bottom:12px;">${escapeHtml(algo.title)}</h2>`;
 
-   // Ses Paneli (Astım veya KOAH için)
+   // Ses Paneli (Astım, KOAH veya Anafilaksi)
     const currentKey = key.toLowerCase().trim();
-    if (currentKey === 'astim' || currentKey === 'koah') {
-        const sesBaslik = currentKey === 'astim' ? "Wheezing (Hırıltı)" : "Ronküs (Kaba Ses)";
+    const sesVerileri = {
+        'astim': 'Wheezing (Hırıltı)',
+        'koah': 'Ronküs (Kaba Ses)',
+        'anafilaksi': 'Stridor (Üst Havayolu Daralması)'
+    };
+
+    if (sesVerileri[currentKey]) {
         html += `
         <div style="margin-bottom:15px; background:#fef2f2; padding:15px; border-radius:12px; border:2px solid #fecaca; text-align:center;">
-            <p style="margin:0 0 10px 0; font-size:15px; font-weight:bold; color:#b91c1c;">🫁 Oskültasyon: ${sesBaslik}</p>
+            <p style="margin:0 0 10px 0; font-size:15px; font-weight:bold; color:#b91c1c;">🫁 Patolojik Ses: ${sesVerileri[currentKey]}</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <button class="back-btn" style="background:#ef4444; width:auto; padding:10px 20px; color:white; margin:0; border:none;" onclick="playSound('${currentKey}')">🔊 Dinle</button>
                 <button class="back-btn" style="background:#64748b; width:auto; padding:10px 20px; color:white; margin:0; border:none;" onclick="stopAllSounds()">⏹️ Durdur</button>
@@ -677,17 +682,21 @@ function renderIlacTablosu() {
   document.getElementById("ilacTabloGövde").innerHTML = html;
 }
 
-// --- AKCİĞER SESLERİ SİSTEMİ ---
+// --- SES SİSTEMİ (ASTIM, KOAH, ANAFİLAKSİ) ---
 const wheezingSound = new Audio('sound/wheezing.mp3');
-const ronkusSound = new Audio('sound/ronkus.mp3'); // Senin kaydettiğin dosya adı
+const ronkusSound = new Audio('sound/ronkus.mp3');
+const stridorSound = new Audio('sound/stridor.mp3');
 
 function playSound(type) {
-    stopAllSounds(); // Önce çalan varsa durdur
+    stopAllSounds();
     if(type === 'astim') wheezingSound.play().catch(e => console.log("Astım sesi hatası:", e));
     if(type === 'koah') ronkusSound.play().catch(e => console.log("KOAH sesi hatası:", e));
+    if(type === 'anafilaksi') stridorSound.play().catch(e => console.log("Stridor sesi hatası:", e));
 }
 
 function stopAllSounds() {
-    wheezingSound.pause(); wheezingSound.currentTime = 0;
-    ronkusSound.pause(); ronkusSound.currentTime = 0;
+    [wheezingSound, ronkusSound, stridorSound].forEach(s => {
+        s.pause();
+        s.currentTime = 0;
+    });
 }
