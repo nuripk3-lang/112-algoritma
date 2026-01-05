@@ -580,8 +580,9 @@ function updateCPRDisplay() {
 
     // 2. Uyarı sesini çal
    // 2. Uyarı sesini çal (Sıfırlayarak oynat)
+   // 2. Uyarı sesini çal (Sıfırlayarak oynat)
     beepSound.currentTime = 0;
-    beepSound.play().catch(e => console.log("Süre sonu sesi başarısız:", e));
+    beepSound.play().catch(e => console.log("Süre sonu sesi telefonda engellendi:", e));
     // 3. Ekrana mesajı yaz
     if (alertEl) {
       alertEl.textContent = "🔔 2 dakika tamamlandı — ritim kontrolü ve ekip değişimi düşün.";
@@ -601,27 +602,28 @@ function startCPR() {
   if (cprInterval) return;
   if (cprRemaining <= 0) cprRemaining = 120;
   
-  // SES MOTORUNU VE DOSYAYI UYANDIR (Mobil Tarayıcılar İçin)
+  // 1. SES MOTORUNU VE DOSYAYI UYANDIR (Mobil Tarayıcılar İçin Şart)
   if (!audioCtx) { 
       audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
   }
   if (audioCtx.state === 'suspended') { audioCtx.resume(); }
 
-  // Telefon kilidini açmak için beep sesini milisaniyelik oynat-durdur yapıyoruz
+  // Telefon kilidini açmak için beep sesini çok kısa oynat-durdur yapıyoruz
+  // Kullanıcı butona bastığı an bu işlem gerçekleştiği için tarayıcı izin verir
   beepSound.play().then(() => {
       beepSound.pause();
       beepSound.currentTime = 0;
-  }).catch(e => console.log("Mobil ses uyandırma pas geçildi veya hata:", e));
+  }).catch(e => console.log("Mobil ses uyandırma hatası:", e));
 
   updateCPRDisplay();
 
-  // 1. Saniye Sayacı
+  // 2. Saniye Sayacı
   cprInterval = setInterval(() => {
     cprRemaining--;
     updateCPRDisplay();
   }, 1000);
 
-  // 2. Metronom (Dakikada 110 Tık)
+  // 3. Metronom (Dakikada 110 Tık)
   metronomeInterval = setInterval(() => {
     playTick();
   }, 545); 
