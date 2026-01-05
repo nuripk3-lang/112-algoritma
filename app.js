@@ -668,7 +668,7 @@ function renderIlacTablosu() {
 
 // --- AKCİĞER SESLERİ SİSTEMİ ---
 const wheezingSound = new Audio('sound/wheezing.mp3');
-const ronkusSound = new Audio('sound/ronküs.MP3'); // Senin kaydettiğin dosya adı
+const ronkusSound = new Audio('sound/ronkus.mp3'); // Senin kaydettiğin dosya adı
 
 function playSound(type) {
     stopAllSounds(); // Önce çalan varsa durdur
