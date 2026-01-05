@@ -391,25 +391,63 @@ function showAlgo(key, grupName) {
 
     html += `<div class="algo-container">`;
 
-    algo.steps.forEach(step => {
-      const typeClass = step.type + "-box";
-      let icon = '🔹 ';
-      if(step.type === 'drug') icon = '💊 ';
-      else if(step.type === 'warning') icon = '⚠️ ';
-      else if(step.type === 'action') icon = '✅ ';
-      else if(step.type === 'note') icon = '📝 ';
-      
-      // --- DÜZELTİLEN KISIM BURASI ---
-      if (step.type === 'table') {
-        html += `<div class="${typeClass}" style="background:transparent; border:none; padding:0;">${step.text}</div>`;
-      } else if (step.type === 'decision') {
-        html += `<div class="${typeClass}"><strong>${escapeHtml(step.title)}</strong><div>${escapeHtml(step.text)}</div></div>`;
-      } else {
-        html += `<div class="${typeClass}">${icon + escapeHtml(step.text)}</div>`;
-      }
-      // -------------------------------
-    });
+    algo.steps.forEach((step, index) => {
+      // Profesyonel Tip Konfigürasyonu
+      const config = {
+        drug:     { color: "#ef4444", icon: "💊", label: "İLAÇ UYGULAMASI", bg: "#fff5f5" },
+        warning:  { color: "#f59e0b", icon: "⚠️", label: "KRİTİK UYARI", bg: "#fffbeb" },
+        action:   { color: "#22c55e", icon: "✅", label: "EYLEM / MÜDAHALE", bg: "#f0fdf4" },
+        note:     { color: "#3b82f6", icon: "📝", label: "NOT / BİLGİ", bg: "#eff6ff" },
+        decision: { color: "#8b5cf6", icon: "❓", label: "KARAR NOKTASI", bg: "#f5f3ff" },
+        step:     { color: "#64748b", icon: "🔹", label: "HAZIRLIK / ADIM", bg: "#f8fafc" }
+      };
 
+      const current = config[step.type] || config.step;
+
+      // Özel Durum: Tablo
+      if (step.type === 'table') {
+        html += `<div style="margin-bottom: 15px;">${step.text}</div>`;
+        return;
+      }
+
+      // Metin İşleme: Başlık ve Açıklama Ayrımı
+      let title = current.label;
+      let description = step.text;
+
+      if (step.type === 'decision') {
+          title = step.title || current.label;
+          description = step.text;
+      } else if (step.text.includes(':')) {
+          const parts = step.text.split(':');
+          title = parts[0];
+          description = parts.slice(1).join(':');
+      }
+
+      html += `
+      <div style="background: ${current.bg}; border-left: 6px solid ${current.color}; padding: 16px; margin-bottom: 8px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); border-left: 6px solid ${current.color};">
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <div style="background: ${current.color}; color: white; min-width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">
+                  ${current.icon}
+              </div>
+              <div style="flex: 1;">
+                  <div style="font-size: 11px; font-weight: 800; color: ${current.color}; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">
+                      ${escapeHtml(title)}
+                  </div>
+                  <div style="font-size: 15px; color: #1e293b; font-weight: 500; line-height: 1.4;">
+                      ${escapeHtml(description)}
+                  </div>
+              </div>
+          </div>
+      </div>`;
+
+      // Adımlar arası ok işareti
+      if (index < algo.steps.length - 1 && algo.steps[index+1].type !== 'table') {
+          html += `
+          <div style="display: flex; justify-content: center; margin: -4px 0 4px 0;">
+              <div style="width: 2px; height: 12px; background: ${current.color}; opacity: 0.3;"></div>
+          </div>`;
+      }
+    });
     if (algo.image) {
       html += `<div class="algo-image" style="margin-top:20px; text-align:center;">
                 <img src="${algo.image}" alt="${algo.title}" style="max-width:100%; height:auto; border-radius:8px; border: 2px solid #ddd;">
@@ -698,5 +736,51 @@ function stopAllSounds() {
     [wheezingSound, ronkusSound, stridorSound].forEach(s => {
         s.pause();
         s.currentTime = 0;
+    });
+}
+
+// Sayfa yüklendiğinde Splash Screen'i yönet
+window.addEventListener('load', () => {
+    const splash = document.getElementById('splash-screen');
+    const bar = document.getElementById('loading-bar');
+    
+    // Önce yükleme çubuğunu doldur
+    setTimeout(() => {
+        bar.style.width = '100%';
+    }, 100);
+
+    // 2 saniye sonra ekranı kaldır
+    setTimeout(() => {
+        splash.style.opacity = '0';
+        setTimeout(() => {
+            splash.style.display = 'none';
+        }, 500);
+    }, 2000);
+});
+
+// Splash Screen Yönetimi
+window.addEventListener('load', () => {
+    const splash = document.getElementById('splash-screen');
+    
+    // Uygulama tamamen hazır olduktan 2.5 saniye sonra kapat
+    setTimeout(() => {
+        splash.style.opacity = '0';
+        splash.style.transform = 'scale(1.1)'; // Hafif büyüme efektiyle çıkış
+        setTimeout(() => {
+            splash.style.display = 'none';
+        }, 800);
+    }, 2500);
+});
+
+// --- SERVICE WORKER KAYDI (PWA İÇİN ŞART) ---
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+                console.log('Servis İşçisi başarıyla kaydedildi:', registration.scope);
+            })
+            .catch(error => {
+                console.log('Servis İşçisi kaydı başarısız:', error);
+            });
     });
 }
